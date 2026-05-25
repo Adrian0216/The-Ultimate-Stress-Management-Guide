@@ -3,176 +3,385 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Harnessing Stress: The Eustress Paradigm</title>
+    <meta name="description" content="Explore the science of Eustress with our interactive dashboard. Learn how to transform distress into a catalyst for peak performance through cognitive reappraisal and physiological regulation.">
+    <meta name="keywords" content="Eustress, Stress Management, Peak Performance, Yerkes-Dodson Law, Cognitive Reappraisal, Mental Health">
+    <title>Harnessing Stress: The Eustress Paradigm Dashboard</title>
+
+    <!-- Primary Stylesheet with Fallback -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+
+    <!-- External Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js" crossorigin="anonymous"></script>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #F8FAFC; color: #0F172A; }
+        :root {
+            --primary-violet: #8B5CF6;
+            --primary-orange: #F97316;
+            --primary-emerald: #10B981;
+            --primary-rose: #F43F5E;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: radial-gradient(at 0% 0%, rgba(139, 92, 246, 0.1) 0px, transparent 50%),
+                        radial-gradient(at 100% 0%, rgba(14, 165, 233, 0.1) 0px, transparent 50%),
+                        radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.1) 0px, transparent 50%),
+                        radial-gradient(at 0% 100%, rgba(249, 115, 22, 0.1) 0px, transparent 50%);
+            background-attachment: fixed;
+            background-color: #F8FAFC;
+            color: #0F172A;
+            transition: background 0.8s ease;
+            min-height: 100vh;
+        }
+
         .chart-container {
             position: relative;
             width: 100%;
-            max-width: 100%;
-            margin-left: auto;
-            margin-right: auto;
-            height: 350px;
-            max-height: 450px;
+            height: 320px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.2);
+            border-radius: 12px;
         }
-        @media (min-width: 768px) {
-            .chart-container { height: 400px; }
+
+        .chart-error-msg {
+            display: none;
+            color: #64748B;
+            font-size: 0.875rem;
+            text-align: center;
+            padding: 1rem;
         }
+
+        .chart-loading {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.5);
+            z-index: 5;
+            transition: opacity 0.5s ease;
+        }
+
         .gradient-text {
-            background-color: #8B5CF6;
-            background-image: linear-gradient(45deg, #8B5CF6, #F97316);
-            background-size: 100%;
-            background-repeat: repeat;
+            background-image: linear-gradient(45deg, var(--primary-violet), var(--primary-orange));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent; 
-            -moz-background-clip: text;
-            -moz-text-fill-color: transparent;
+            background-clip: text;
+            color: var(--primary-violet); /* Fallback */
         }
-        .card { transition: transform 0.2s ease-in-out; }
-        .card:hover { transform: translateY(-4px); }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.05);
+        }
+
+        .breath-transition {
+            transition: width 4s linear, height 4s linear, background-color 4s linear;
+        }
+
+        .flow-step { position: relative; transition: all 0.3s ease; }
+        .flow-step:hover { transform: scale(1.02); z-index: 10; }
+        .flow-step:focus-within .step-tip, .flow-step:hover .step-tip { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+        .step-tip {
+            position: absolute;
+            top: 100%; left: 50%;
+            transform: translateX(-50%) translateY(10px);
+            width: 220px;
+            background: #1e293b;
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 400;
+            text-align: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+            margin-top: 12px;
+            z-index: 50;
+        }
+
+        @keyframes flow-pulse {
+            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+        .pulse-emerald { animation: flow-pulse 2s infinite; }
+
+        @keyframes flow-pulse-rose {
+            0% { box-shadow: 0 0 0 0 rgba(244, 63, 94, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(244, 63, 94, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(244, 63, 94, 0); }
+        }
+        .pulse-rose { animation: flow-pulse-rose 2s infinite; }
+
+        /* Focus styles for a11y */
+        button:focus-visible, input:focus-visible {
+            outline: 2px solid var(--primary-violet);
+            outline-offset: 2px;
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
     </style>
 </head>
 <body class="p-4 md:p-8">
 
-    <!-- 
-    REQUIRED META COMMENTS:
-    1. PALETTE: "Energetic & Playful" (Violet #8B5CF6, Orange #F97316, Sky Blue #0EA5E9, Emerald #10B981, Rose #F43F5E)
-    2. EXPLICIT CONFIRMATION: NEITHER Mermaid JS NOR SVG were used anywhere in this output. All graphics use Canvas, structured HTML/CSS, or Unicode.
-    3. PLAN SUMMARY: 
-       - Introduction: Hook the reader on the concept of 'Eustress'.
-       - Section 1 (Perception): Doughnut chart showing current negative bias vs optimal perception.
-       - Section 2 (The Curve): Line chart demonstrating the Yerkes-Dodson law (Performance vs Arousal).
-       - Section 3 (Physiology): Radar chart comparing Threat vs Challenge biological responses.
-       - Section 4 (Process): HTML/Tailwind flow diagram mapping the cognitive appraisal process.
-       - Section 5 (Action): Bar chart ranking effective stress-harnessing techniques based on impact.
-    4. CHART SELECTION SUMMARY:
-       - Data Point 1 (Perception) -> Goal: Compare -> Chosen: Doughnut Chart (Chart.js) -> Best for simple proportions, avoids SVG.
-       - Data Point 2 (Performance Curve) -> Goal: Relationships/Change -> Chosen: Line Chart (Chart.js) -> Best for continuous variables (Stress vs Performance), avoids SVG.
-       - Data Point 3 (Physiology) -> Goal: Compare -> Chosen: Radar Chart (Chart.js) -> Ideal for multivariate categorical comparison across biological metrics, avoids SVG.
-       - Data Point 4 (Process) -> Goal: Organize -> Chosen: Structured HTML/CSS Diagram -> Best for flowchart logic, strictly adheres to NO SVG and NO MERMAID constraints.
-       - Data Point 5 (Techniques) -> Goal: Compare/Rank -> Chosen: Horizontal Bar Chart (Chart.js) -> Best for ranking text-heavy categories, avoids SVG.
-    -->
+    <noscript>
+        <div class="fixed inset-0 z-[100] bg-white p-8 text-center flex flex-col items-center justify-center">
+            <h1 class="text-2xl font-bold mb-4 text-rose-600">JavaScript Required</h1>
+            <p class="max-w-md text-slate-600">This dashboard uses interactive visualizations to explain the science of Eustress. Please enable JavaScript to experience the full interactive features.</p>
+        </div>
+    </noscript>
 
     <div class="max-w-7xl mx-auto">
-        <header class="text-center mb-16 mt-8">
+        <!-- Accessibility Navigation -->
+        <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:bg-white focus:p-4 focus:rounded-lg focus:shadow-xl">Skip to main content</a>
+
+        <div class="flex justify-end mb-4">
+            <div class="glass p-2 rounded-full flex items-center gap-2 px-4 shadow-sm" role="region" aria-label="Theme Switcher">
+                <span id="distressLabel" class="text-xs font-bold text-slate-400 uppercase tracking-wider transition-colors" aria-hidden="true">Distress</span>
+                <button id="themeToggle"
+                        class="w-12 h-6 bg-slate-200 rounded-full relative transition-colors duration-300 focus:outline-none"
+                        aria-label="Toggle between Distress and Eustress themes"
+                        aria-pressed="false">
+                    <div id="toggleCircle" class="absolute top-1 left-1 w-4 h-4 bg-white rounded-full shadow-sm transition-transform duration-300 transform"></div>
+                </button>
+                <span id="eustressLabel" class="text-xs font-bold text-emerald-600 uppercase tracking-wider transition-colors" aria-hidden="true">Eustress</span>
+            </div>
+        </div>
+
+        <header id="main-content" class="text-center mb-12 mt-4" data-aos="fade-down">
             <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight mb-4 text-slate-900">
-                Stop Avoiding Stress. <br/><span class="gradient-text">Start Harnessing It.</span>
+                <span id="heroPrimary">Stop Avoiding Stress.</span> <br/><span class="gradient-text" id="heroSecondary">Start Harnessing It.</span>
             </h1>
-            <p class="text-lg md:text-xl text-slate-600 max-w-3xl mx-auto leading-relaxed">
+            <p id="heroDescription" class="text-lg md:text-xl text-slate-600 max-w-3xl mx-auto leading-relaxed">
                 The modern paradigm of stress management isn't about elimination—it's about transformation. Discover the science of <strong>Eustress</strong> and learn how to biologically and psychologically reframe tension into a powerful catalyst for peak performance.
             </p>
         </header>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
-            <section class="bg-white rounded-2xl shadow-lg p-6 md:p-8 card border-t-4 border-violet-500 flex flex-col h-full">
+            <section class="glass rounded-2xl p-6 md:p-8 border-t-4 border-violet-500 flex flex-col h-full" data-aos="fade-up">
                 <div class="mb-6">
                     <h2 class="text-2xl font-bold text-slate-800 mb-2">The Perception Gap</h2>
-                    <p class="text-slate-600">
-                        Most individuals categorize all stress as harmful ("Distress"). However, psychological research indicates that viewing stress as a neutral energy source ("Eustress") significantly alters our physical and mental outcomes.
-                    </p>
+                    <p class="text-slate-600">Viewing stress as a neutral energy source significantly alters physical and mental outcomes.</p>
                 </div>
-                <div class="chart-container mt-auto">
-                    <canvas id="perceptionChart"></canvas>
+                <div class="chart-container mt-auto" id="container-perception">
+                    <div class="chart-loading"><div class="animate-spin rounded-full h-8 w-8 border-b-2 border-violet-500"></div></div>
+                    <canvas id="perceptionChart" aria-label="Doughnut chart showing stress perception statistics" role="img"></canvas>
+                    <div class="chart-error-msg" id="error-perception">Failed to load chart data. Stress perception is typically 78% threat-based.</div>
                 </div>
             </section>
 
-            <section class="bg-white rounded-2xl shadow-lg p-6 md:p-8 card border-t-4 border-orange-500 flex flex-col h-full lg:row-span-2">
+            <section class="glass rounded-2xl p-6 md:p-8 border-t-4 border-orange-500 flex flex-col h-full lg:row-span-2" data-aos="fade-up" data-aos-delay="100">
                 <div class="mb-6">
                     <h2 class="text-2xl font-bold text-slate-800 mb-2">The Yerkes-Dodson Law</h2>
-                    <p class="text-slate-600">
-                        Performance doesn't peak when we are entirely relaxed. It peaks under moderate physiological arousal. Too little stress leads to apathy and boreout; too much leads to anxiety and burnout. Harnessing stress means surfing the peak of this bell curve.
-                    </p>
+                    <p class="text-slate-600">Performance peaks under moderate arousal. Too little stress leads to boreout; too much leads to burnout.</p>
                 </div>
-                <div class="chart-container flex-grow" style="height: 450px;">
-                    <canvas id="performanceChart"></canvas>
+
+                <div class="bg-slate-50/50 p-4 rounded-xl mb-6 border border-slate-100 shadow-inner">
+                    <label for="stressMeter" class="block text-sm font-bold text-slate-700 mb-2 flex justify-between">
+                        <span>Interactive Stress-O-Meter</span>
+                        <span id="stressValueText" class="text-emerald-500 font-extrabold uppercase tracking-tighter" aria-live="polite">Optimal Arousal (Eustress)</span>
+                    </label>
+                    <input type="range" id="stressMeter" min="0" max="100" value="50"
+                           class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-orange-500"
+                           aria-valuemin="0" aria-valuemax="100" aria-valuenow="50">
+                    <div class="flex justify-between text-[10px] text-slate-400 mt-1 uppercase font-bold tracking-tighter" aria-hidden="true">
+                        <span>Boreout</span>
+                        <span>Optimal</span>
+                        <span>Burnout</span>
+                    </div>
+                </div>
+
+                <div class="chart-container flex-grow" style="height: 400px;" id="container-performance">
+                    <div class="chart-loading"><div class="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500"></div></div>
+                    <canvas id="performanceChart" aria-label="Line chart demonstrating the relationship between stress and performance" role="img"></canvas>
+                    <div class="chart-error-msg" id="error-performance">Failed to load performance curve visualization.</div>
                 </div>
             </section>
 
-            <section class="bg-white rounded-2xl shadow-lg p-6 md:p-8 card border-t-4 border-sky-500 flex flex-col h-full">
+            <section class="glass rounded-2xl p-6 md:p-8 border-t-4 border-sky-500 flex flex-col h-full" data-aos="fade-up" data-aos-delay="200">
                 <div class="mb-6">
                     <h2 class="text-2xl font-bold text-slate-800 mb-2">Threat vs. Challenge Response</h2>
-                    <p class="text-slate-600">
-                        When you appraise a stressor as a threat, blood vessels constrict. When appraised as a challenge, cardiac output increases, vessels dilate, and the brain receives maximum oxygen. It is the same adrenaline, mapped to a different physical outcome.
-                    </p>
+                    <p class="text-slate-600">Reframing stress dilates blood vessels and increases cardiac efficiency.</p>
                 </div>
-                <div class="chart-container mt-auto">
-                    <canvas id="physiologyChart"></canvas>
+                <div class="chart-container mt-auto" id="container-physiology">
+                    <div class="chart-loading"><div class="animate-spin rounded-full h-8 w-8 border-b-2 border-sky-500"></div></div>
+                    <canvas id="physiologyChart" aria-label="Radar chart comparing biological responses to stress" role="img"></canvas>
+                    <div class="chart-error-msg" id="error-physiology">Failed to load physiological response comparison.</div>
                 </div>
             </section>
 
-            <section class="bg-white rounded-2xl shadow-lg p-6 md:p-8 card border-t-4 border-slate-800 lg:col-span-2">
+            <section class="glass rounded-2xl p-6 md:p-8 border-t-4 border-slate-800 lg:col-span-2" data-aos="zoom-in">
                 <div class="mb-8">
                     <h2 class="text-2xl font-bold text-slate-800 mb-2">The Cognitive Reappraisal Flow</h2>
-                    <p class="text-slate-600 max-w-3xl">
-                        Transforming distress into eustress is an active, conscious process. This mapping demonstrates the critical intersection where your psychological appraisal dictates your biological reality and ultimate outcome.
-                    </p>
+                    <p class="text-slate-600 max-w-3xl">Your psychological appraisal dictates your biological reality.</p>
                 </div>
                 
-                <div class="flex flex-col md:flex-row items-center justify-between w-full p-4 bg-slate-50 rounded-xl overflow-x-auto text-sm md:text-base font-semibold">
-                    <div class="bg-slate-200 text-slate-800 p-4 rounded-lg shadow-sm w-48 text-center shrink-0 border-2 border-slate-300">
-                        1. Stressor Event Occurs
+                <div class="flex flex-col md:flex-row items-center justify-between w-full p-6 bg-slate-50/50 rounded-xl overflow-visible text-sm md:text-base font-semibold border border-slate-100">
+                    <div class="flow-step bg-white text-slate-800 p-4 rounded-lg shadow-sm w-48 text-center shrink-0 border border-slate-200" tabindex="0">
+                        1. Stressor Event
+                        <div class="step-tip">An external demand or pressure is placed upon you. It is inherently neutral energy until processed.</div>
                     </div>
                     
-                    <div class="py-2 md:py-0 md:px-2 text-2xl text-slate-400 font-black shrink-0">
+                    <div class="py-2 md:py-0 md:px-2 text-2xl text-slate-300 font-black shrink-0" aria-hidden="true">
                         <span class="hidden md:inline">&#10142;</span>
                         <span class="md:hidden">&#11015;</span>
                     </div>
                     
-                    <div class="bg-violet-100 text-violet-800 p-4 rounded-lg shadow-sm w-48 text-center shrink-0 border-2 border-violet-300">
-                        2. Cognitive Appraisal<br/><span class="text-xs font-normal">(Is this a threat or a challenge?)</span>
+                    <div id="flowAppraisal" class="flow-step bg-violet-50 text-violet-800 p-4 rounded-lg shadow-sm w-48 text-center shrink-0 border border-violet-100" tabindex="0">
+                        2. Cognitive Appraisal
+                        <div class="step-tip">Your brain evaluates: "Do I have the resources to handle this?" This is the point of transformation.</div>
+                        <br/><span class="text-[10px] font-normal uppercase tracking-widest">Threat or Challenge?</span>
                     </div>
 
-                    <div class="py-2 md:py-0 md:px-2 text-2xl text-slate-400 font-black flex flex-col justify-center shrink-0">
+                    <div class="py-2 md:py-0 md:px-2 text-2xl text-slate-300 font-black flex flex-col justify-center shrink-0" aria-hidden="true">
                         <span class="hidden md:inline">&#10142;</span>
                         <span class="md:hidden">&#11015;</span>
                     </div>
 
                     <div class="flex flex-col gap-4 w-56 shrink-0">
-                        <div class="bg-rose-100 text-rose-800 p-3 rounded-lg shadow-sm text-center border-2 border-rose-300">
-                            3A. Threat Assessed<br/><span class="text-xs font-normal">Leads to avoidance & distress</span>
+                        <div id="flowThreat" class="flow-step bg-rose-50 text-rose-800 p-3 rounded-lg shadow-sm text-center border border-rose-100 opacity-50 transition-all duration-500" tabindex="0">
+                            3A. Threat
+                            <div class="step-tip">Viewed as exceeding resources. Focus on potential loss, triggering vascular constriction.</div>
+                            <br/><span class="text-[10px] font-normal uppercase tracking-widest">Distress / Avoidance</span>
                         </div>
-                        <div class="bg-emerald-100 text-emerald-800 p-3 rounded-lg shadow-sm text-center border-2 border-emerald-300">
-                            3B. Challenge Assessed<br/><span class="text-xs font-normal">Leads to engagement & eustress</span>
+                        <div id="flowChallenge" class="flow-step bg-emerald-50 text-emerald-800 p-3 rounded-lg shadow-sm text-center border border-emerald-100 transition-all duration-500 pulse-emerald" tabindex="0">
+                            3B. Challenge
+                            <div class="step-tip">Viewed as opportunity for growth. Focus on potential gain, triggering vascular dilation.</div>
+                            <br/><span class="text-[10px] font-normal uppercase tracking-widest">Eustress / Engagement</span>
                         </div>
                     </div>
 
-                    <div class="py-2 md:py-0 md:px-2 text-2xl text-slate-400 font-black shrink-0">
+                    <div class="py-2 md:py-0 md:px-2 text-2xl text-slate-300 font-black shrink-0" aria-hidden="true">
                         <span class="hidden md:inline">&#10142;</span>
                         <span class="md:hidden">&#11015;</span>
                     </div>
 
-                    <div class="bg-orange-100 text-orange-800 p-4 rounded-lg shadow-sm w-48 text-center shrink-0 border-2 border-orange-300">
-                        4. Outcome<br/><span class="text-xs font-normal">Burnout vs. Peak Growth</span>
+                    <div class="flow-step bg-orange-50 text-orange-800 p-4 rounded-lg shadow-sm w-48 text-center shrink-0 border border-orange-100" tabindex="0">
+                        4. Outcome
+                        <div class="step-tip">The cumulative result of your response: either psychological erosion or adaptive resilience.</div>
+                        <br/><span class="text-[10px] font-normal uppercase tracking-widest">Growth & Resilience</span>
                     </div>
                 </div>
             </section>
 
-            <section class="bg-white rounded-2xl shadow-lg p-6 md:p-8 card border-t-4 border-emerald-500 lg:col-span-2">
-                <div class="mb-6">
-                    <h2 class="text-2xl font-bold text-slate-800 mb-2">High-Impact Strategies for Harnessing Stress</h2>
-                    <p class="text-slate-600 max-w-3xl">
-                        Research highlights specific cognitive and physical interventions that effectively shift the body's response from threat to challenge. The chart below ranks these interventions based on their clinical efficacy scores in promoting eustress.
-                    </p>
+            <section class="glass rounded-2xl p-6 md:p-8 border-t-4 border-sky-400 flex flex-col items-center justify-center text-center" data-aos="fade-right">
+                <div class="w-full text-left mb-6">
+                    <h2 class="text-2xl font-bold text-slate-800 mb-2">Eustress Breath Pacer</h2>
+                    <p class="text-slate-600 text-sm">Physiologically shift from 'Freeze' to 'Flow'. Box breathing (4-4-4-4) re-engages the prefrontal cortex.</p>
                 </div>
-                <div class="chart-container mt-4">
-                    <canvas id="strategiesChart"></canvas>
+
+                <div class="relative flex items-center justify-center w-60 h-60 my-4" aria-hidden="true">
+                    <div class="absolute w-full h-full rounded-full border-2 border-slate-100"></div>
+                    <div id="breathCircle" class="absolute w-20 h-20 rounded-full bg-sky-400/20 breath-transition"></div>
+                    <div id="innerBreathCircle" class="w-24 h-24 bg-gradient-to-br from-sky-400 to-indigo-500 rounded-full shadow-xl flex items-center justify-center z-10 breath-transition">
+                         <span id="breathText" class="text-white font-black text-xs uppercase tracking-widest">Ready</span>
+                    </div>
+                </div>
+
+                <div class="flex gap-4 mt-6">
+                    <button id="breathToggle"
+                            class="px-8 py-3 bg-slate-900 text-white rounded-full font-bold hover:scale-105 active:scale-95 transition-all shadow-lg text-sm"
+                            aria-live="polite">
+                        START PACER
+                    </button>
+                </div>
+            </section>
+
+            <section class="glass rounded-2xl p-6 md:p-8 border-t-4 border-emerald-500 flex flex-col h-full" data-aos="fade-left">
+                <div class="mb-6">
+                    <h2 class="text-2xl font-bold text-slate-800 mb-2">High-Impact Interventions</h2>
+                    <p class="text-slate-600 text-sm">Clinical efficacy scores for promoting the Eustress response.</p>
+                </div>
+                <div class="chart-container mt-auto" id="container-strategies">
+                    <div class="chart-loading"><div class="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-500"></div></div>
+                    <canvas id="strategiesChart" aria-label="Bar chart showing efficacy of different stress management strategies" role="img"></canvas>
+                    <div class="chart-error-msg" id="error-strategies">Failed to load intervention data rankings.</div>
                 </div>
             </section>
 
         </div>
         
-        <footer class="mt-16 text-center text-slate-500 text-sm pb-8">
-            <p>Data synthesized for conceptual demonstration of the Eustress Paradigm. Designed for optimal visual comprehension.</p>
+        <footer class="mt-16 text-center text-slate-400 text-sm pb-8 font-medium">
+            <p>&copy; 2024 EUSTRESS DASHBOARD // HARNESS THE POWER OF TENSION</p>
         </footer>
     </div>
 
+    <!-- Script loading with retry/fallback logic -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js" crossorigin="anonymous"></script>
     <script>
+        // Global Error Handling & State
+        const AppState = {
+            isEustress: true,
+            charts: {},
+            isBreathing: false,
+            breathInterval: null,
+            breathState: 0
+        };
+
+        // Fallback AOS Initialization
+        function initAOS() {
+            try {
+                if (typeof AOS !== 'undefined') {
+                    AOS.init({ duration: 800, easing: 'ease-in-out', once: true });
+                }
+            } catch (e) { console.warn("AOS failed to initialize:", e); }
+        }
+
+        // Utility: Safe Chart Update
+        function safeUpdateChart(id) {
+            if (AppState.charts[id]) {
+                try { AppState.charts[id].update('none'); }
+                catch (e) { console.error(`Failed to update chart ${id}:`, e); }
+            }
+        }
+
+        // Utility: Hide Loading
+        function hideLoading(id) {
+            const container = document.getElementById(`container-${id}`);
+            if (container) {
+                const loader = container.querySelector('.chart-loading');
+                if (loader) loader.style.opacity = '0';
+                setTimeout(() => { if (loader) loader.style.display = 'none'; }, 500);
+            }
+        }
+
+        // Utility: Show Error
+        function showChartError(id) {
+            const errorMsg = document.getElementById(`error-${id}`);
+            const canvas = document.getElementById(`${id}Chart`);
+            if (errorMsg) errorMsg.style.display = 'block';
+            if (canvas) canvas.style.display = 'none';
+            hideLoading(id);
+        }
+
+        // Text wrapping for Chart.js
         const wrapLabel = (label, maxLength = 16) => {
+            if (typeof label !== 'string') return label;
             const words = label.split(' ');
             const lines = [];
             let currentLine = '';
@@ -193,178 +402,366 @@
                 titleFont: { family: 'Inter', size: 14, weight: 'bold' },
                 bodyFont: { family: 'Inter', size: 13 },
                 padding: 12,
-                cornerRadius: 8,
-                callbacks: {
-                    title: function(tooltipItems) {
-                        const item = tooltipItems[0];
-                        let label = item.chart.data.labels[item.dataIndex];
-                        if (Array.isArray(label)) {
-                            return label.join(' ');
-                        } else {
-                            return label;
-                        }
-                    }
-                }
+                cornerRadius: 8
             },
             legend: {
-                labels: { font: { family: 'Inter' } }
+                labels: { font: { family: 'Inter', weight: '600' } }
             }
         };
 
-        const perceptionCtx = document.getElementById('perceptionChart').getContext('2d');
-        new Chart(perceptionCtx, {
-            type: 'doughnut',
-            data: {
-                labels: [wrapLabel('Stress as a Threat (Distress)'), wrapLabel('Stress as a Catalyst (Eustress)')],
-                datasets: [{
-                    data: [78, 22],
-                    backgroundColor: ['#F43F5E', '#10B981'],
-                    borderWidth: 0,
-                    hoverOffset: 4
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                cutout: '65%',
-                plugins: {
-                    ...globalTooltipConfig,
-                    legend: { position: 'bottom', labels: { padding: 20, font: { family: 'Inter' } } }
-                }
-            }
-        });
+        // --- Chart Initializations with Try-Catch ---
 
-        const performanceCtx = document.getElementById('performanceChart').getContext('2d');
-        const curveLabels = ['Low Arousal', 'Mild Stress', 'Moderate Stress', 'High Stress', 'Extreme Overload'];
-        new Chart(performanceCtx, {
-            type: 'line',
-            data: {
-                labels: curveLabels.map(l => wrapLabel(l)),
-                datasets: [{
-                    label: 'Performance Level',
-                    data: [20, 60, 95, 50, 15],
-                    borderColor: '#8B5CF6',
-                    backgroundColor: 'rgba(139, 92, 246, 0.1)',
-                    borderWidth: 4,
-                    tension: 0.4,
-                    fill: true,
-                    pointBackgroundColor: ['#94A3B8', '#0EA5E9', '#10B981', '#F97316', '#F43F5E'],
-                    pointRadius: 6,
-                    pointHoverRadius: 8
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    y: { 
-                        beginAtZero: true, 
-                        max: 110,
-                        title: { display: true, text: 'Cognitive & Physical Performance', font: { family: 'Inter', weight: 'bold' } },
-                        grid: { borderDash: [4, 4] }
+        function initPerceptionChart() {
+            try {
+                const ctx = document.getElementById('perceptionChart').getContext('2d');
+                AppState.charts.perception = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: [wrapLabel('Stress as a Threat (Distress)'), wrapLabel('Stress as a Catalyst (Eustress)')],
+                        datasets: [{
+                            data: [78, 22],
+                            backgroundColor: ['#F43F5E', '#10B981'],
+                            borderWidth: 0,
+                            hoverOffset: 10
+                        }]
                     },
-                    x: {
-                        title: { display: true, text: 'Stress / Arousal Level', font: { family: 'Inter', weight: 'bold' } },
-                        grid: { display: false }
-                    }
-                },
-                plugins: {
-                    ...globalTooltipConfig,
-                    annotation: {
-                        annotations: {
-                            box1: { type: 'box', xMin: 1.5, xMax: 2.5, yMin: 0, yMax: 110, backgroundColor: 'rgba(16, 185, 129, 0.1)', borderWidth: 0 }
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        cutout: '75%',
+                        plugins: {
+                            ...globalTooltipConfig,
+                            legend: { position: 'bottom', labels: { padding: 20, font: { family: 'Inter', size: 11 } } }
                         }
                     }
-                }
-            }
-        });
+                });
+                hideLoading('perception');
+            } catch (e) { showChartError('perception'); }
+        }
 
-        const physiologyCtx = document.getElementById('physiologyChart').getContext('2d');
-        const radarLabels = ['Cardiac Output', 'Vasodilation', 'Focus/Attention', 'Fear/Anxiety', 'Motivation Drive'];
-        new Chart(physiologyCtx, {
-            type: 'radar',
-            data: {
-                labels: radarLabels.map(l => wrapLabel(l)),
-                datasets: [
-                    {
-                        label: 'Challenge Response (Eustress)',
-                        data: [90, 85, 95, 20, 90],
-                        backgroundColor: 'rgba(16, 185, 129, 0.2)',
-                        borderColor: '#10B981',
-                        pointBackgroundColor: '#10B981',
-                        borderWidth: 2
+        function initPerformanceChart() {
+            try {
+                const ctx = document.getElementById('performanceChart').getContext('2d');
+                const curveLabels = ['Low Arousal', 'Mild Stress', 'Moderate Stress', 'High Stress', 'Extreme Overload'];
+                AppState.charts.performance = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: curveLabels.map(l => wrapLabel(l)),
+                        datasets: [
+                            {
+                                label: 'Performance Level',
+                                data: [20, 60, 95, 50, 15],
+                                borderColor: '#8B5CF6',
+                                backgroundColor: 'rgba(139, 92, 246, 0.05)',
+                                borderWidth: 4,
+                                tension: 0.4,
+                                fill: true,
+                                pointBackgroundColor: ['#94A3B8', '#0EA5E9', '#10B981', '#F97316', '#F43F5E'],
+                                pointRadius: 6
+                            },
+                            {
+                                label: 'Your Current State',
+                                data: [{x: 2, y: 95}],
+                                backgroundColor: '#0F172A',
+                                borderColor: '#0F172A',
+                                pointRadius: 10,
+                                pointHoverRadius: 12,
+                                showLine: false,
+                                type: 'scatter'
+                            }
+                        ]
                     },
-                    {
-                        label: 'Threat Response (Distress)',
-                        data: [70, 15, 60, 95, 40],
-                        backgroundColor: 'rgba(244, 63, 94, 0.2)',
-                        borderColor: '#F43F5E',
-                        pointBackgroundColor: '#F43F5E',
-                        borderWidth: 2
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true, max: 110,
+                                title: { display: true, text: 'Cognitive & Physical Performance', font: { family: 'Inter', weight: 'bold', size: 10 } },
+                                grid: { borderDash: [4, 4], color: 'rgba(0,0,0,0.05)' }
+                            },
+                            x: {
+                                title: { display: true, text: 'Stress / Arousal Level', font: { family: 'Inter', weight: 'bold', size: 10 } },
+                                grid: { display: false }
+                            }
+                        },
+                        plugins: {
+                            ...globalTooltipConfig,
+                            annotation: {
+                                annotations: {
+                                    box1: { type: 'box', xMin: 1.5, xMax: 2.5, yMin: 0, yMax: 110, backgroundColor: 'rgba(16, 185, 129, 0.05)', borderWidth: 0 }
+                                }
+                            }
+                        }
                     }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    r: {
-                        angleLines: { color: 'rgba(0, 0, 0, 0.1)' },
-                        grid: { color: 'rgba(0, 0, 0, 0.1)' },
-                        pointLabels: { font: { family: 'Inter', size: 12 } },
-                        ticks: { display: false, max: 100, min: 0 }
-                    }
-                },
-                plugins: { ...globalTooltipConfig }
-            }
-        });
+                });
+                hideLoading('performance');
+            } catch (e) { showChartError('performance'); }
+        }
 
-        const strategiesCtx = document.getElementById('strategiesChart').getContext('2d');
-        const stratLabels = [
-            'Cognitive Reappraisal (Reframing)', 
-            'Controlled Breathwork (Box Breathing)', 
-            'Acute Physical Exercise', 
-            'Vocalizing/Social Support', 
-            'Structured Micro-Breaks'
-        ];
-        new Chart(strategiesCtx, {
-            type: 'bar',
-            data: {
-                labels: stratLabels.map(l => wrapLabel(l)),
-                datasets: [{
-                    label: 'Efficacy Score (0-100)',
-                    data: [92, 85, 78, 72, 65],
-                    backgroundColor: [
-                        '#8B5CF6',
-                        '#0EA5E9',
-                        '#10B981',
-                        '#F97316',
-                        '#64748B'
-                    ],
-                    borderRadius: 6
-                }]
-            },
-            options: {
-                indexAxis: 'y',
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    x: {
-                        beginAtZero: true,
-                        max: 100,
-                        grid: { borderDash: [4, 4] },
-                        title: { display: true, text: 'Relative Effectiveness', font: { family: 'Inter' } }
+        function initPhysiologyChart() {
+            try {
+                const ctx = document.getElementById('physiologyChart').getContext('2d');
+                const radarLabels = ['Cardiac Output', 'Vasodilation', 'Focus/Attention', 'Fear/Anxiety', 'Motivation Drive'];
+                AppState.charts.physiology = new Chart(ctx, {
+                    type: 'radar',
+                    data: {
+                        labels: radarLabels.map(l => wrapLabel(l)),
+                        datasets: [
+                            {
+                                label: 'Challenge Response (Eustress)',
+                                data: [90, 85, 95, 20, 90],
+                                backgroundColor: 'rgba(16, 185, 129, 0.2)',
+                                borderColor: '#10B981',
+                                pointBackgroundColor: '#10B981',
+                                borderWidth: 2
+                            },
+                            {
+                                label: 'Threat Response (Distress)',
+                                data: [70, 15, 60, 95, 40],
+                                backgroundColor: 'rgba(244, 63, 94, 0.2)',
+                                borderColor: '#F43F5E',
+                                pointBackgroundColor: '#F43F5E',
+                                borderWidth: 2
+                            }
+                        ]
                     },
-                    y: {
-                        grid: { display: false },
-                        ticks: { font: { family: 'Inter', size: 12 } }
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            r: {
+                                angleLines: { color: 'rgba(0, 0, 0, 0.05)' },
+                                grid: { color: 'rgba(0, 0, 0, 0.05)' },
+                                pointLabels: { font: { family: 'Inter', size: 10, weight: '600' } },
+                                ticks: { display: false, max: 100, min: 0 }
+                            }
+                        },
+                        plugins: { ...globalTooltipConfig }
                     }
-                },
-                plugins: {
-                    ...globalTooltipConfig,
-                    legend: { display: false }
+                });
+                hideLoading('physiology');
+            } catch (e) { showChartError('physiology'); }
+        }
+
+        function initStrategiesChart() {
+            try {
+                const ctx = document.getElementById('strategiesChart').getContext('2d');
+                const stratLabels = ['Cognitive Reappraisal', 'Box Breathing', 'Physical Exercise', 'Social Support', 'Micro-Breaks'];
+                AppState.charts.strategies = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: stratLabels.map(l => wrapLabel(l)),
+                        datasets: [{
+                            label: 'Efficacy Score (0-100)',
+                            data: [92, 85, 78, 72, 65],
+                            backgroundColor: ['#8B5CF6', '#0EA5E9', '#10B981', '#F97316', '#64748B'],
+                            borderRadius: 8
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            x: { beginAtZero: true, max: 100, grid: { borderDash: [4, 4] } },
+                            y: { grid: { display: false }, ticks: { font: { family: 'Inter', size: 10, weight: '600' } } }
+                        },
+                        plugins: { ...globalTooltipConfig, legend: { display: false } }
+                    }
+                });
+                hideLoading('strategies');
+            } catch (e) { showChartError('strategies'); }
+        }
+
+        // --- Interactive Logic ---
+
+        function initThemeToggle() {
+            const themeToggle = document.getElementById('themeToggle');
+            const toggleCircle = document.getElementById('toggleCircle');
+            const heroPrimary = document.getElementById('heroPrimary');
+            const heroSecondary = document.getElementById('heroSecondary');
+            const heroDescription = document.getElementById('heroDescription');
+            const flowThreat = document.getElementById('flowThreat');
+            const flowChallenge = document.getElementById('flowChallenge');
+            const distressLabel = document.getElementById('distressLabel');
+            const eustressLabel = document.getElementById('eustressLabel');
+
+            if (!themeToggle) return;
+
+            themeToggle.addEventListener('click', () => {
+                AppState.isEustress = !AppState.isEustress;
+                themeToggle.setAttribute('aria-pressed', !AppState.isEustress);
+
+                if (AppState.isEustress) {
+                    toggleCircle.style.transform = 'translateX(24px)';
+                    themeToggle.classList.replace('bg-rose-500', 'bg-emerald-500');
+                    heroPrimary.innerText = 'Stop Avoiding Stress.';
+                    heroSecondary.innerText = 'Start Harnessing It.';
+                    heroDescription.innerHTML = 'The modern paradigm of stress management isn\'t about elimination—it\'s about transformation. Discover the science of <strong>Eustress</strong>.';
+                    document.body.style.background = 'radial-gradient(at 0% 0%, rgba(139, 92, 246, 0.1) 0px, transparent 50%), radial-gradient(at 100% 0%, rgba(14, 165, 233, 0.1) 0px, transparent 50%), radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.1) 0px, transparent 50%), radial-gradient(at 0% 100%, rgba(249, 115, 22, 0.1) 0px, transparent 50%)';
+
+                    distressLabel.classList.remove('text-rose-600');
+                    distressLabel.classList.add('text-slate-400');
+                    eustressLabel.classList.remove('text-slate-400');
+                    eustressLabel.classList.add('text-emerald-600');
+
+                    flowThreat.classList.add('opacity-50');
+                    flowThreat.classList.remove('pulse-rose');
+                    flowChallenge.classList.remove('opacity-50');
+                    flowChallenge.classList.add('pulse-emerald');
+
+                    if (AppState.charts.perception) {
+                        AppState.charts.perception.data.datasets[0].data = [78, 22];
+                        safeUpdateChart('perception');
+                    }
+                    if (AppState.charts.physiology) {
+                        AppState.charts.physiology.data.datasets[0].hidden = false;
+                        safeUpdateChart('physiology');
+                    }
+                    if (AppState.charts.strategies) {
+                        AppState.charts.strategies.data.datasets[0].backgroundColor = ['#8B5CF6', '#0EA5E9', '#10B981', '#F97316', '#64748B'];
+                        safeUpdateChart('strategies');
+                    }
+                } else {
+                    toggleCircle.style.transform = 'translateX(0px)';
+                    themeToggle.classList.replace('bg-emerald-500', 'bg-rose-500');
+                    heroPrimary.innerText = 'Feeling the Pressure?';
+                    heroSecondary.innerText = 'It\'s Time to Reframe.';
+                    heroDescription.innerHTML = 'When stress is viewed as a threat, it becomes <strong>Distress</strong>. This state triggers systemic constriction, reducing your biological capacity for growth.';
+                    document.body.style.background = 'radial-gradient(at 0% 0%, rgba(244, 63, 94, 0.1) 0px, transparent 50%), radial-gradient(at 100% 100%, rgba(244, 63, 94, 0.05) 0px, transparent 50%)';
+
+                    distressLabel.classList.replace('text-slate-400', 'text-rose-600');
+                    eustressLabel.classList.replace('text-emerald-600', 'text-slate-400');
+
+                    flowThreat.classList.remove('opacity-50');
+                    flowThreat.classList.add('pulse-rose');
+                    flowChallenge.classList.add('opacity-50');
+                    flowChallenge.classList.remove('pulse-emerald');
+
+                    if (AppState.charts.perception) {
+                        AppState.charts.perception.data.datasets[0].data = [95, 5];
+                        safeUpdateChart('perception');
+                    }
+                    if (AppState.charts.physiology) {
+                        AppState.charts.physiology.data.datasets[0].hidden = true;
+                        safeUpdateChart('physiology');
+                    }
+                    if (AppState.charts.strategies) {
+                        AppState.charts.strategies.data.datasets[0].backgroundColor = '#F43F5E';
+                        safeUpdateChart('strategies');
+                    }
                 }
+            });
+
+            // Set Initial State
+            toggleCircle.style.transform = 'translateX(24px)';
+            themeToggle.classList.add('bg-emerald-500');
+        }
+
+        function initStressMeter() {
+            const meter = document.getElementById('stressMeter');
+            const text = document.getElementById('stressValueText');
+            if (!meter || !text) return;
+
+            const getBellCurveY = (x) => 20 + 75 * Math.exp(-Math.pow(x - 50, 2) / (2 * Math.pow(22, 2)));
+
+            let throttleTimer;
+            meter.addEventListener('input', (e) => {
+                const val = parseInt(e.target.value);
+                meter.setAttribute('aria-valuenow', val);
+
+                // Immediate text update for responsiveness
+                if (val < 30) {
+                    text.innerText = 'Under-stimulated (Boreout)';
+                    text.className = 'text-sky-500 font-extrabold uppercase tracking-tighter';
+                } else if (val >= 30 && val <= 70) {
+                    text.innerText = 'Optimal Arousal (Eustress)';
+                    text.className = 'text-emerald-500 font-extrabold uppercase tracking-tighter';
+                } else {
+                    text.innerText = 'Overloaded (Burnout)';
+                    text.className = 'text-rose-500 font-extrabold uppercase tracking-tighter';
+                }
+
+                // Throttled chart update for performance
+                if (!throttleTimer) {
+                    throttleTimer = setTimeout(() => {
+                        const y = getBellCurveY(val);
+                        if (AppState.charts.performance) {
+                            const xIndex = (val / 100) * 4;
+                            AppState.charts.performance.data.datasets[1].data = [{x: xIndex, y: y}];
+                            safeUpdateChart('performance');
+                        }
+                        throttleTimer = null;
+                    }, 16); // ~60fps
+                }
+            });
+        }
+
+        function initBreathPacer() {
+            const toggle = document.getElementById('breathToggle');
+            const circle = document.getElementById('breathCircle');
+            const innerCircle = document.getElementById('innerBreathCircle');
+            const text = document.getElementById('breathText');
+
+            if (!toggle || !circle || !innerCircle || !text) return;
+
+            const steps = [
+                { text: 'Inhale', size: '15rem', innerSize: '8rem', color: 'from-sky-400 to-indigo-500' },
+                { text: 'Hold', size: '15rem', innerSize: '8rem', color: 'from-indigo-500 to-purple-500' },
+                { text: 'Exhale', size: '5rem', innerSize: '6rem', color: 'from-purple-500 to-sky-400' },
+                { text: 'Hold', size: '5rem', innerSize: '6rem', color: 'from-sky-400 to-indigo-400' }
+            ];
+
+            function updateBreath() {
+                const step = steps[AppState.breathState];
+                text.innerText = step.text;
+                circle.style.width = step.size;
+                circle.style.height = step.size;
+                innerCircle.style.width = step.innerSize;
+                innerCircle.style.height = step.innerSize;
+                innerCircle.className = `w-24 h-24 bg-gradient-to-br ${step.color} rounded-full shadow-xl flex items-center justify-center z-10 breath-transition`;
+                AppState.breathState = (AppState.breathState + 1) % 4;
             }
+
+            toggle.addEventListener('click', () => {
+                AppState.isBreathing = !AppState.isBreathing;
+                if (AppState.isBreathing) {
+                    toggle.innerText = 'STOP SESSION';
+                    toggle.classList.replace('bg-slate-900', 'bg-rose-500');
+                    updateBreath();
+                    AppState.breathInterval = setInterval(updateBreath, 4000);
+                } else {
+                    toggle.innerText = 'START PACER';
+                    toggle.classList.replace('bg-rose-500', 'bg-slate-900');
+                    clearInterval(AppState.breathInterval);
+                    text.innerText = 'Ready';
+                    circle.style.width = '5rem';
+                    circle.style.height = '5rem';
+                    innerCircle.style.width = '6rem';
+                    innerCircle.style.height = '6rem';
+                    AppState.breathState = 0;
+                }
+            });
+        }
+
+        // Initialize Everything
+        window.addEventListener('load', () => {
+            initAOS();
+
+            // Check if Chart.js loaded
+            if (typeof Chart !== 'undefined') {
+                initPerceptionChart();
+                initPerformanceChart();
+                initPhysiologyChart();
+                initStrategiesChart();
+            } else {
+                ['perception', 'performance', 'physiology', 'strategies'].forEach(id => showChartError(id));
+            }
+
+            initThemeToggle();
+            initStressMeter();
+            initBreathPacer();
         });
     </script>
 </body>
