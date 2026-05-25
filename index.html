@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Harnessing Stress: The Eustress Paradigm</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #F8FAFC; color: #0F172A; }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 450px;
+        }
+        @media (min-width: 768px) {
+            .chart-container { height: 400px; }
+        }
+        .gradient-text {
+            background-color: #8B5CF6;
+            background-image: linear-gradient(45deg, #8B5CF6, #F97316);
+            background-size: 100%;
+            background-repeat: repeat;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent; 
+            -moz-background-clip: text;
+            -moz-text-fill-color: transparent;
+        }
+        .card { transition: transform 0.2s ease-in-out; }
+        .card:hover { transform: translateY(-4px); }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <!-- 
+    REQUIRED META COMMENTS:
+    1. PALETTE: "Energetic & Playful" (Violet #8B5CF6, Orange #F97316, Sky Blue #0EA5E9, Emerald #10B981, Rose #F43F5E)
+    2. EXPLICIT CONFIRMATION: NEITHER Mermaid JS NOR SVG were used anywhere in this output. All graphics use Canvas, structured HTML/CSS, or Unicode.
+    3. PLAN SUMMARY: 
+       - Introduction: Hook the reader on the concept of 'Eustress'.
+       - Section 1 (Perception): Doughnut chart showing current negative bias vs optimal perception.
+       - Section 2 (The Curve): Line chart demonstrating the Yerkes-Dodson law (Performance vs Arousal).
+       - Section 3 (Physiology): Radar chart comparing Threat vs Challenge biological responses.
+       - Section 4 (Process): HTML/Tailwind flow diagram mapping the cognitive appraisal process.
+       - Section 5 (Action): Bar chart ranking effective stress-harnessing techniques based on impact.
+    4. CHART SELECTION SUMMARY:
+       - Data Point 1 (Perception) -> Goal: Compare -> Chosen: Doughnut Chart (Chart.js) -> Best for simple proportions, avoids SVG.
+       - Data Point 2 (Performance Curve) -> Goal: Relationships/Change -> Chosen: Line Chart (Chart.js) -> Best for continuous variables (Stress vs Performance), avoids SVG.
+       - Data Point 3 (Physiology) -> Goal: Compare -> Chosen: Radar Chart (Chart.js) -> Ideal for multivariate categorical comparison across biological metrics, avoids SVG.
+       - Data Point 4 (Process) -> Goal: Organize -> Chosen: Structured HTML/CSS Diagram -> Best for flowchart logic, strictly adheres to NO SVG and NO MERMAID constraints.
+       - Data Point 5 (Techniques) -> Goal: Compare/Rank -> Chosen: Horizontal Bar Chart (Chart.js) -> Best for ranking text-heavy categories, avoids SVG.
+    -->
+
+    <div class="max-w-7xl mx-auto">
+        <header class="text-center mb-16 mt-8">
+            <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight mb-4 text-slate-900">
+                Stop Avoiding Stress. <br/><span class="gradient-text">Start Harnessing It.</span>
+            </h1>
+            <p class="text-lg md:text-xl text-slate-600 max-w-3xl mx-auto leading-relaxed">
+                The modern paradigm of stress management isn't about elimination—it's about transformation. Discover the science of <strong>Eustress</strong> and learn how to biologically and psychologically reframe tension into a powerful catalyst for peak performance.
+            </p>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+            <section class="bg-white rounded-2xl shadow-lg p-6 md:p-8 card border-t-4 border-violet-500 flex flex-col h-full">
+                <div class="mb-6">
+                    <h2 class="text-2xl font-bold text-slate-800 mb-2">The Perception Gap</h2>
+                    <p class="text-slate-600">
+                        Most individuals categorize all stress as harmful ("Distress"). However, psychological research indicates that viewing stress as a neutral energy source ("Eustress") significantly alters our physical and mental outcomes.
+                    </p>
+                </div>
+                <div class="chart-container mt-auto">
+                    <canvas id="perceptionChart"></canvas>
+                </div>
+            </section>
+
+            <section class="bg-white rounded-2xl shadow-lg p-6 md:p-8 card border-t-4 border-orange-500 flex flex-col h-full lg:row-span-2">
+                <div class="mb-6">
+                    <h2 class="text-2xl font-bold text-slate-800 mb-2">The Yerkes-Dodson Law</h2>
+                    <p class="text-slate-600">
+                        Performance doesn't peak when we are entirely relaxed. It peaks under moderate physiological arousal. Too little stress leads to apathy and boreout; too much leads to anxiety and burnout. Harnessing stress means surfing the peak of this bell curve.
+                    </p>
+                </div>
+                <div class="chart-container flex-grow" style="height: 450px;">
+                    <canvas id="performanceChart"></canvas>
+                </div>
+            </section>
+
+            <section class="bg-white rounded-2xl shadow-lg p-6 md:p-8 card border-t-4 border-sky-500 flex flex-col h-full">
+                <div class="mb-6">
+                    <h2 class="text-2xl font-bold text-slate-800 mb-2">Threat vs. Challenge Response</h2>
+                    <p class="text-slate-600">
+                        When you appraise a stressor as a threat, blood vessels constrict. When appraised as a challenge, cardiac output increases, vessels dilate, and the brain receives maximum oxygen. It is the same adrenaline, mapped to a different physical outcome.
+                    </p>
+                </div>
+                <div class="chart-container mt-auto">
+                    <canvas id="physiologyChart"></canvas>
+                </div>
+            </section>
+
+            <section class="bg-white rounded-2xl shadow-lg p-6 md:p-8 card border-t-4 border-slate-800 lg:col-span-2">
+                <div class="mb-8">
+                    <h2 class="text-2xl font-bold text-slate-800 mb-2">The Cognitive Reappraisal Flow</h2>
+                    <p class="text-slate-600 max-w-3xl">
+                        Transforming distress into eustress is an active, conscious process. This mapping demonstrates the critical intersection where your psychological appraisal dictates your biological reality and ultimate outcome.
+                    </p>
+                </div>
+                
+                <div class="flex flex-col md:flex-row items-center justify-between w-full p-4 bg-slate-50 rounded-xl overflow-x-auto text-sm md:text-base font-semibold">
+                    <div class="bg-slate-200 text-slate-800 p-4 rounded-lg shadow-sm w-48 text-center shrink-0 border-2 border-slate-300">
+                        1. Stressor Event Occurs
+                    </div>
+                    
+                    <div class="py-2 md:py-0 md:px-2 text-2xl text-slate-400 font-black shrink-0">
+                        <span class="hidden md:inline">&#10142;</span>
+                        <span class="md:hidden">&#11015;</span>
+                    </div>
+                    
+                    <div class="bg-violet-100 text-violet-800 p-4 rounded-lg shadow-sm w-48 text-center shrink-0 border-2 border-violet-300">
+                        2. Cognitive Appraisal<br/><span class="text-xs font-normal">(Is this a threat or a challenge?)</span>
+                    </div>
+
+                    <div class="py-2 md:py-0 md:px-2 text-2xl text-slate-400 font-black flex flex-col justify-center shrink-0">
+                        <span class="hidden md:inline">&#10142;</span>
+                        <span class="md:hidden">&#11015;</span>
+                    </div>
+
+                    <div class="flex flex-col gap-4 w-56 shrink-0">
+                        <div class="bg-rose-100 text-rose-800 p-3 rounded-lg shadow-sm text-center border-2 border-rose-300">
+                            3A. Threat Assessed<br/><span class="text-xs font-normal">Leads to avoidance & distress</span>
+                        </div>
+                        <div class="bg-emerald-100 text-emerald-800 p-3 rounded-lg shadow-sm text-center border-2 border-emerald-300">
+                            3B. Challenge Assessed<br/><span class="text-xs font-normal">Leads to engagement & eustress</span>
+                        </div>
+                    </div>
+
+                    <div class="py-2 md:py-0 md:px-2 text-2xl text-slate-400 font-black shrink-0">
+                        <span class="hidden md:inline">&#10142;</span>
+                        <span class="md:hidden">&#11015;</span>
+                    </div>
+
+                    <div class="bg-orange-100 text-orange-800 p-4 rounded-lg shadow-sm w-48 text-center shrink-0 border-2 border-orange-300">
+                        4. Outcome<br/><span class="text-xs font-normal">Burnout vs. Peak Growth</span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="bg-white rounded-2xl shadow-lg p-6 md:p-8 card border-t-4 border-emerald-500 lg:col-span-2">
+                <div class="mb-6">
+                    <h2 class="text-2xl font-bold text-slate-800 mb-2">High-Impact Strategies for Harnessing Stress</h2>
+                    <p class="text-slate-600 max-w-3xl">
+                        Research highlights specific cognitive and physical interventions that effectively shift the body's response from threat to challenge. The chart below ranks these interventions based on their clinical efficacy scores in promoting eustress.
+                    </p>
+                </div>
+                <div class="chart-container mt-4">
+                    <canvas id="strategiesChart"></canvas>
+                </div>
+            </section>
+
+        </div>
+        
+        <footer class="mt-16 text-center text-slate-500 text-sm pb-8">
+            <p>Data synthesized for conceptual demonstration of the Eustress Paradigm. Designed for optimal visual comprehension.</p>
+        </footer>
+    </div>
+
+    <script>
+        const wrapLabel = (label, maxLength = 16) => {
+            const words = label.split(' ');
+            const lines = [];
+            let currentLine = '';
+            words.forEach(word => {
+                if ((currentLine + word).length > maxLength && currentLine !== '') {
+                    lines.push(currentLine.trim());
+                    currentLine = '';
+                }
+                currentLine += word + ' ';
+            });
+            if (currentLine.trim() !== '') lines.push(currentLine.trim());
+            return lines.length > 1 ? lines : lines[0];
+        };
+
+        const globalTooltipConfig = {
+            tooltip: {
+                backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                titleFont: { family: 'Inter', size: 14, weight: 'bold' },
+                bodyFont: { family: 'Inter', size: 13 },
+                padding: 12,
+                cornerRadius: 8,
+                callbacks: {
+                    title: function(tooltipItems) {
+                        const item = tooltipItems[0];
+                        let label = item.chart.data.labels[item.dataIndex];
+                        if (Array.isArray(label)) {
+                            return label.join(' ');
+                        } else {
+                            return label;
+                        }
+                    }
+                }
+            },
+            legend: {
+                labels: { font: { family: 'Inter' } }
+            }
+        };
+
+        const perceptionCtx = document.getElementById('perceptionChart').getContext('2d');
+        new Chart(perceptionCtx, {
+            type: 'doughnut',
+            data: {
+                labels: [wrapLabel('Stress as a Threat (Distress)'), wrapLabel('Stress as a Catalyst (Eustress)')],
+                datasets: [{
+                    data: [78, 22],
+                    backgroundColor: ['#F43F5E', '#10B981'],
+                    borderWidth: 0,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '65%',
+                plugins: {
+                    ...globalTooltipConfig,
+                    legend: { position: 'bottom', labels: { padding: 20, font: { family: 'Inter' } } }
+                }
+            }
+        });
+
+        const performanceCtx = document.getElementById('performanceChart').getContext('2d');
+        const curveLabels = ['Low Arousal', 'Mild Stress', 'Moderate Stress', 'High Stress', 'Extreme Overload'];
+        new Chart(performanceCtx, {
+            type: 'line',
+            data: {
+                labels: curveLabels.map(l => wrapLabel(l)),
+                datasets: [{
+                    label: 'Performance Level',
+                    data: [20, 60, 95, 50, 15],
+                    borderColor: '#8B5CF6',
+                    backgroundColor: 'rgba(139, 92, 246, 0.1)',
+                    borderWidth: 4,
+                    tension: 0.4,
+                    fill: true,
+                    pointBackgroundColor: ['#94A3B8', '#0EA5E9', '#10B981', '#F97316', '#F43F5E'],
+                    pointRadius: 6,
+                    pointHoverRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: { 
+                        beginAtZero: true, 
+                        max: 110,
+                        title: { display: true, text: 'Cognitive & Physical Performance', font: { family: 'Inter', weight: 'bold' } },
+                        grid: { borderDash: [4, 4] }
+                    },
+                    x: {
+                        title: { display: true, text: 'Stress / Arousal Level', font: { family: 'Inter', weight: 'bold' } },
+                        grid: { display: false }
+                    }
+                },
+                plugins: {
+                    ...globalTooltipConfig,
+                    annotation: {
+                        annotations: {
+                            box1: { type: 'box', xMin: 1.5, xMax: 2.5, yMin: 0, yMax: 110, backgroundColor: 'rgba(16, 185, 129, 0.1)', borderWidth: 0 }
+                        }
+                    }
+                }
+            }
+        });
+
+        const physiologyCtx = document.getElementById('physiologyChart').getContext('2d');
+        const radarLabels = ['Cardiac Output', 'Vasodilation', 'Focus/Attention', 'Fear/Anxiety', 'Motivation Drive'];
+        new Chart(physiologyCtx, {
+            type: 'radar',
+            data: {
+                labels: radarLabels.map(l => wrapLabel(l)),
+                datasets: [
+                    {
+                        label: 'Challenge Response (Eustress)',
+                        data: [90, 85, 95, 20, 90],
+                        backgroundColor: 'rgba(16, 185, 129, 0.2)',
+                        borderColor: '#10B981',
+                        pointBackgroundColor: '#10B981',
+                        borderWidth: 2
+                    },
+                    {
+                        label: 'Threat Response (Distress)',
+                        data: [70, 15, 60, 95, 40],
+                        backgroundColor: 'rgba(244, 63, 94, 0.2)',
+                        borderColor: '#F43F5E',
+                        pointBackgroundColor: '#F43F5E',
+                        borderWidth: 2
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    r: {
+                        angleLines: { color: 'rgba(0, 0, 0, 0.1)' },
+                        grid: { color: 'rgba(0, 0, 0, 0.1)' },
+                        pointLabels: { font: { family: 'Inter', size: 12 } },
+                        ticks: { display: false, max: 100, min: 0 }
+                    }
+                },
+                plugins: { ...globalTooltipConfig }
+            }
+        });
+
+        const strategiesCtx = document.getElementById('strategiesChart').getContext('2d');
+        const stratLabels = [
+            'Cognitive Reappraisal (Reframing)', 
+            'Controlled Breathwork (Box Breathing)', 
+            'Acute Physical Exercise', 
+            'Vocalizing/Social Support', 
+            'Structured Micro-Breaks'
+        ];
+        new Chart(strategiesCtx, {
+            type: 'bar',
+            data: {
+                labels: stratLabels.map(l => wrapLabel(l)),
+                datasets: [{
+                    label: 'Efficacy Score (0-100)',
+                    data: [92, 85, 78, 72, 65],
+                    backgroundColor: [
+                        '#8B5CF6',
+                        '#0EA5E9',
+                        '#10B981',
+                        '#F97316',
+                        '#64748B'
+                    ],
+                    borderRadius: 6
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        max: 100,
+                        grid: { borderDash: [4, 4] },
+                        title: { display: true, text: 'Relative Effectiveness', font: { family: 'Inter' } }
+                    },
+                    y: {
+                        grid: { display: false },
+                        ticks: { font: { family: 'Inter', size: 12 } }
+                    }
+                },
+                plugins: {
+                    ...globalTooltipConfig,
+                    legend: { display: false }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
