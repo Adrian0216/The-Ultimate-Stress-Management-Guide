@@ -1,0 +1,1217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Master Stress — The Complete Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1a2e;
+    --paper: #f5f0e8;
+    --cream: #fdf8f0;
+    --teal: #1b6e6e;
+    --teal-light: #2a9d8f;
+    --amber: #e07b39;
+    --amber-light: #f4a261;
+    --rose: #c1666b;
+    --sage: #6b8f71;
+    --lavender: #7b6fa0;
+    --gold: #d4a853;
+    --text-muted: #6b6b7b;
+    --border: rgba(26,26,46,0.12);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 999;
+    background: rgba(245,240,232,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    display: flex; align-items: center; gap: 0; height: 56px;
+  }
+  .nav-logo { font-family: 'Playfair Display', serif; font-weight: 900; font-size: 1.1rem; color: var(--teal); margin-right: auto; letter-spacing: -0.5px; }
+  .nav-links { display: flex; gap: 0.2rem; flex-wrap: wrap; }
+  .nav-links a {
+    font-size: 0.72rem; font-weight: 500; color: var(--text-muted); text-decoration: none;
+    padding: 0.35rem 0.7rem; border-radius: 20px; transition: all 0.2s; letter-spacing: 0.03em; text-transform: uppercase;
+  }
+  .nav-links a:hover { background: var(--teal); color: white; }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    background: var(--ink);
+    display: grid; place-items: center;
+    position: relative; overflow: hidden;
+    padding: 6rem 2rem 4rem;
+  }
+  .hero-bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 20% 60%, rgba(27,110,110,0.35) 0%, transparent 70%),
+      radial-gradient(ellipse 50% 60% at 80% 30%, rgba(224,123,57,0.2) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 40% at 60% 80%, rgba(107,143,113,0.15) 0%, transparent 60%);
+  }
+  .hero-noise {
+    position: absolute; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    opacity: 0.6;
+  }
+  .hero-content { position: relative; text-align: center; max-width: 780px; }
+  .hero-eyebrow {
+    display: inline-block; font-family: 'DM Mono', monospace; font-size: 0.72rem;
+    color: var(--amber-light); letter-spacing: 0.18em; text-transform: uppercase;
+    border: 1px solid rgba(244,162,97,0.4); padding: 0.35rem 1rem; border-radius: 20px;
+    margin-bottom: 1.5rem;
+    animation: fadeUp 0.8s ease both;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif; font-size: clamp(3rem, 8vw, 6rem);
+    font-weight: 900; color: white; line-height: 1.05; letter-spacing: -2px;
+    animation: fadeUp 0.8s 0.15s ease both;
+  }
+  .hero h1 em { color: var(--amber-light); font-style: italic; }
+  .hero-sub {
+    font-size: 1.1rem; color: rgba(255,255,255,0.65); margin-top: 1.5rem; max-width: 560px; margin-inline: auto;
+    animation: fadeUp 0.8s 0.3s ease both;
+  }
+  .hero-cta {
+    display: flex; gap: 1rem; justify-content: center; margin-top: 2.5rem; flex-wrap: wrap;
+    animation: fadeUp 0.8s 0.45s ease both;
+  }
+  .btn {
+    padding: 0.75rem 1.8rem; border-radius: 40px; font-weight: 600; font-size: 0.9rem;
+    cursor: pointer; text-decoration: none; transition: all 0.25s; border: none; display: inline-block;
+  }
+  .btn-primary { background: var(--amber); color: white; }
+  .btn-primary:hover { background: var(--amber-light); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(224,123,57,0.4); }
+  .btn-outline { background: transparent; color: white; border: 1px solid rgba(255,255,255,0.35); }
+  .btn-outline:hover { background: rgba(255,255,255,0.08); }
+  .hero-stats {
+    display: flex; gap: 3rem; justify-content: center; margin-top: 4rem;
+    animation: fadeUp 0.8s 0.6s ease both;
+  }
+  .hero-stat { text-align: center; }
+  .hero-stat-num { font-family: 'Playfair Display', serif; font-size: 2.2rem; font-weight: 900; color: var(--teal-light); }
+  .hero-stat-label { font-size: 0.75rem; color: rgba(255,255,255,0.5); letter-spacing: 0.05em; text-transform: uppercase; }
+
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* ── SECTIONS ── */
+  .section { padding: 6rem 2rem; max-width: 1100px; margin: 0 auto; }
+  .section-sm { padding: 4rem 2rem; max-width: 1100px; margin: 0 auto; }
+  .section-full { padding: 6rem 2rem; }
+  .section-tag {
+    display: inline-block; font-family: 'DM Mono', monospace; font-size: 0.7rem;
+    color: var(--teal); letter-spacing: 0.15em; text-transform: uppercase;
+    border-bottom: 2px solid var(--teal); padding-bottom: 0.15rem; margin-bottom: 1rem;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif; font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 900; line-height: 1.15; letter-spacing: -1px; margin-bottom: 0.75rem;
+  }
+  .section-lead { font-size: 1.1rem; color: var(--text-muted); max-width: 640px; line-height: 1.8; }
+
+  /* ── DIVIDER ── */
+  .divider { height: 1px; background: var(--border); margin: 0 2rem; }
+  .alt-bg { background: var(--paper); }
+
+  /* ── CARDS GRID ── */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-top: 3rem; }
+  .card {
+    background: white; border-radius: 16px; padding: 2rem; border: 1px solid var(--border);
+    transition: transform 0.25s, box-shadow 0.25s;
+    position: relative; overflow: hidden;
+  }
+  .card:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(26,26,46,0.1); }
+  .card-accent { position: absolute; top: 0; left: 0; right: 0; height: 4px; }
+  .card-icon { font-size: 2rem; margin-bottom: 1rem; }
+  .card h3 { font-family: 'Playfair Display', serif; font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem; }
+  .card p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.7; }
+
+  /* ── STRESS METER ── */
+  .stress-meter-wrap { background: white; border-radius: 20px; padding: 2.5rem; border: 1px solid var(--border); margin-top: 2rem; }
+  .meter-bar-bg { height: 16px; background: #eee; border-radius: 8px; overflow: hidden; margin: 1rem 0; }
+  .meter-bar { height: 100%; border-radius: 8px; transition: width 0.6s ease; }
+  .meter-labels { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted); font-family: 'DM Mono', monospace; }
+
+  /* ── TABS ── */
+  .tab-bar { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 2rem; }
+  .tab-btn {
+    padding: 0.5rem 1.2rem; border-radius: 24px; border: 1px solid var(--border);
+    background: white; font-size: 0.85rem; font-weight: 500; cursor: pointer;
+    transition: all 0.2s; color: var(--text-muted);
+  }
+  .tab-btn.active { background: var(--teal); color: white; border-color: var(--teal); }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; animation: fadeUp 0.35s ease; }
+
+  /* ── CHECKLIST ── */
+  .checklist-section { background: var(--ink); color: white; border-radius: 24px; padding: 3rem; margin-top: 3rem; }
+  .checklist-section h3 { font-family: 'Playfair Display', serif; font-size: 1.6rem; margin-bottom: 1.5rem; }
+  .check-group { margin-bottom: 2rem; }
+  .check-group-title { font-size: 0.75rem; font-family: 'DM Mono', monospace; letter-spacing: 0.12em; text-transform: uppercase; color: var(--amber-light); margin-bottom: 1rem; }
+  .check-item {
+    display: flex; align-items: flex-start; gap: 0.85rem; padding: 0.7rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.07); cursor: pointer; transition: background 0.15s;
+    border-radius: 8px; padding: 0.7rem 0.8rem;
+  }
+  .check-item:hover { background: rgba(255,255,255,0.04); }
+  .check-item input[type="checkbox"] { display: none; }
+  .check-box {
+    width: 20px; height: 20px; border: 2px solid rgba(255,255,255,0.3); border-radius: 5px;
+    flex-shrink: 0; display: grid; place-items: center; transition: all 0.2s; margin-top: 2px;
+  }
+  .check-item.checked .check-box { background: var(--teal-light); border-color: var(--teal-light); }
+  .check-item.checked .check-box::after { content: '✓'; color: white; font-size: 0.75rem; font-weight: 700; }
+  .check-item.checked .check-text { color: rgba(255,255,255,0.45); text-decoration: line-through; }
+  .check-text { font-size: 0.9rem; line-height: 1.6; }
+  .checklist-progress { margin-bottom: 2rem; }
+  .progress-bar-bg { height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; }
+  .progress-bar { height: 100%; background: linear-gradient(90deg, var(--teal-light), var(--amber-light)); border-radius: 3px; transition: width 0.4s; }
+  .progress-text { font-family: 'DM Mono', monospace; font-size: 0.78rem; color: rgba(255,255,255,0.5); margin-top: 0.4rem; }
+
+  /* ── STRESS TEST ── */
+  .quiz-card { background: white; border-radius: 20px; border: 1px solid var(--border); overflow: hidden; margin-top: 2rem; }
+  .quiz-header { background: var(--teal); color: white; padding: 2rem; }
+  .quiz-header h3 { font-family: 'Playfair Display', serif; font-size: 1.4rem; }
+  .quiz-header p { font-size: 0.88rem; opacity: 0.8; margin-top: 0.25rem; }
+  .quiz-body { padding: 2rem; }
+  .quiz-q { margin-bottom: 2rem; border-bottom: 1px solid var(--border); padding-bottom: 1.5rem; }
+  .quiz-q:last-child { border-bottom: none; }
+  .quiz-q p { font-weight: 500; margin-bottom: 0.75rem; font-size: 0.95rem; }
+  .quiz-options { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .quiz-opt {
+    padding: 0.4rem 1rem; border-radius: 20px; border: 1px solid var(--border);
+    font-size: 0.82rem; cursor: pointer; transition: all 0.2s; background: white; color: var(--ink);
+  }
+  .quiz-opt:hover { border-color: var(--teal); color: var(--teal); }
+  .quiz-opt.selected { background: var(--teal); color: white; border-color: var(--teal); }
+  .quiz-result { display: none; padding: 2rem; border-top: 1px solid var(--border); }
+  .quiz-result.show { display: block; animation: fadeUp 0.4s ease; }
+  .result-badge {
+    display: inline-block; padding: 0.4rem 1.2rem; border-radius: 20px;
+    font-family: 'DM Mono', monospace; font-size: 0.8rem; font-weight: 500; margin-bottom: 1rem;
+  }
+  .result-eustress { background: rgba(107,143,113,0.15); color: var(--sage); }
+  .result-moderate { background: rgba(212,168,83,0.15); color: var(--gold); }
+  .result-high { background: rgba(193,102,107,0.2); color: var(--rose); }
+  .result-title { font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 700; margin-bottom: 0.5rem; }
+  .result-desc { font-size: 0.92rem; color: var(--text-muted); line-height: 1.8; }
+  .submit-btn {
+    width: 100%; padding: 1rem; background: var(--teal); color: white; border: none;
+    border-radius: 12px; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: all 0.2s; margin-top: 1rem;
+  }
+  .submit-btn:hover { background: var(--teal-light); }
+
+  /* ── PERSON CARDS ── */
+  .person-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 3rem; }
+  .person-card {
+    background: white; border-radius: 16px; border: 1px solid var(--border); overflow: hidden;
+    transition: transform 0.25s, box-shadow 0.25s;
+  }
+  .person-card:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(26,26,46,0.1); }
+  .person-header { padding: 1.5rem 1.5rem 1rem; display: flex; align-items: center; gap: 1rem; }
+  .person-avatar {
+    width: 56px; height: 56px; border-radius: 50%; display: grid; place-items: center;
+    font-size: 1.5rem; flex-shrink: 0;
+  }
+  .person-meta h4 { font-weight: 600; font-size: 1rem; }
+  .person-meta span { font-size: 0.78rem; color: var(--text-muted); }
+  .person-body { padding: 0 1.5rem 1.5rem; }
+  .person-strategy { margin-bottom: 0.6rem; display: flex; gap: 0.5rem; align-items: flex-start; }
+  .strategy-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--teal-light); flex-shrink: 0; margin-top: 7px; }
+  .person-body p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.7; }
+
+  /* ── TWO COL ── */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start; }
+  @media (max-width: 720px) { .two-col { grid-template-columns: 1fr; gap: 2rem; } }
+  .big-num { font-family: 'Playfair Display', serif; font-size: 5rem; font-weight: 900; color: var(--teal); line-height: 1; margin-bottom: 0.5rem; }
+
+  /* ── ACCORDION ── */
+  .accordion { margin-top: 2rem; }
+  .acc-item { border: 1px solid var(--border); border-radius: 12px; margin-bottom: 0.75rem; overflow: hidden; }
+  .acc-head {
+    padding: 1.1rem 1.5rem; display: flex; justify-content: space-between; align-items: center;
+    cursor: pointer; font-weight: 500; transition: background 0.15s; background: white;
+  }
+  .acc-head:hover { background: var(--paper); }
+  .acc-head .acc-icon { font-size: 1.1rem; transition: transform 0.3s; flex-shrink: 0; }
+  .acc-item.open .acc-icon { transform: rotate(45deg); }
+  .acc-body { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; background: white; }
+  .acc-body-inner { padding: 0 1.5rem 1.5rem; font-size: 0.9rem; color: var(--text-muted); line-height: 1.8; }
+  .acc-body-inner ul { padding-left: 1.2rem; margin-top: 0.5rem; }
+  .acc-body-inner li { margin-bottom: 0.4rem; }
+
+  /* ── HIGHLIGHT BOX ── */
+  .highlight {
+    background: linear-gradient(135deg, var(--teal) 0%, #0d4a4a 100%);
+    color: white; border-radius: 20px; padding: 3rem;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center;
+    margin-top: 4rem;
+  }
+  @media (max-width: 600px) { .highlight { grid-template-columns: 1fr; } }
+  .highlight h2 { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 900; margin-bottom: 1rem; }
+  .highlight p { font-size: 0.95rem; opacity: 0.8; line-height: 1.8; }
+  .highlight-list { list-style: none; }
+  .highlight-list li { display: flex; gap: 0.75rem; margin-bottom: 0.85rem; font-size: 0.9rem; }
+  .highlight-list li::before { content: '→'; color: var(--amber-light); font-weight: 700; }
+
+  /* ── MINDSET TILES ── */
+  .mindset-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 2rem; }
+  @media (max-width: 720px) { .mindset-grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 480px) { .mindset-grid { grid-template-columns: 1fr; } }
+  .mindset-tile {
+    border-radius: 14px; padding: 1.5rem; position: relative; overflow: hidden;
+    min-height: 160px; display: flex; flex-direction: column; justify-content: flex-end;
+  }
+  .mindset-tile h4 { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 700; color: white; margin-bottom: 0.3rem; }
+  .mindset-tile p { font-size: 0.8rem; color: rgba(255,255,255,0.8); line-height: 1.6; }
+  .mindset-tile-icon { font-size: 2rem; position: absolute; top: 1.2rem; right: 1.2rem; opacity: 0.6; }
+
+  /* ── QUOTE BLOCK ── */
+  .quote-block {
+    border-left: 4px solid var(--amber); padding: 1.5rem 2rem; background: white;
+    border-radius: 0 12px 12px 0; margin: 2rem 0;
+  }
+  .quote-block blockquote { font-family: 'Playfair Display', serif; font-size: 1.25rem; font-style: italic; color: var(--ink); line-height: 1.6; }
+  .quote-block cite { display: block; font-size: 0.8rem; color: var(--text-muted); margin-top: 0.75rem; font-style: normal; }
+
+  /* ── TABLE ── */
+  .compare-table { width: 100%; border-collapse: collapse; margin-top: 2rem; }
+  .compare-table th { background: var(--ink); color: white; padding: 1rem 1.25rem; text-align: left; font-size: 0.85rem; font-weight: 600; }
+  .compare-table td { padding: 0.85rem 1.25rem; border-bottom: 1px solid var(--border); font-size: 0.88rem; vertical-align: top; }
+  .compare-table tr:nth-child(even) td { background: var(--paper); }
+  .compare-table tr:last-child td { border-bottom: none; }
+  .good-badge { background: rgba(107,143,113,0.15); color: var(--sage); padding: 0.2rem 0.6rem; border-radius: 10px; font-size: 0.75rem; font-weight: 600; }
+  .bad-badge { background: rgba(193,102,107,0.15); color: var(--rose); padding: 0.2rem 0.6rem; border-radius: 10px; font-size: 0.75rem; font-weight: 600; }
+
+  /* ── DAILY ROUTINE ── */
+  .timeline { position: relative; margin-top: 2.5rem; }
+  .timeline::before { content: ''; position: absolute; left: 28px; top: 0; bottom: 0; width: 2px; background: var(--border); }
+  .tl-item { display: flex; gap: 1.5rem; margin-bottom: 2rem; position: relative; }
+  .tl-dot { width: 56px; height: 56px; border-radius: 50%; flex-shrink: 0; display: grid; place-items: center; font-size: 1.3rem; border: 3px solid white; box-shadow: 0 0 0 2px var(--border); z-index: 1; }
+  .tl-content { padding-top: 0.6rem; }
+  .tl-time { font-family: 'DM Mono', monospace; font-size: 0.72rem; color: var(--teal); letter-spacing: 0.08em; }
+  .tl-content h4 { font-weight: 600; margin: 0.2rem 0; }
+  .tl-content p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.7; }
+
+  /* ── BENEFITS GRID ── */
+  .benefits-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.25rem; margin-top: 2.5rem; }
+  .benefit-tile {
+    padding: 1.5rem; border-radius: 14px; text-align: center;
+    border: 1px solid var(--border); background: white; transition: all 0.25s;
+  }
+  .benefit-tile:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(26,26,46,0.08); }
+  .benefit-icon { font-size: 2.2rem; margin-bottom: 0.75rem; }
+  .benefit-tile h4 { font-weight: 600; font-size: 0.95rem; margin-bottom: 0.35rem; }
+  .benefit-tile p { font-size: 0.8rem; color: var(--text-muted); line-height: 1.6; }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--ink); color: rgba(255,255,255,0.5); text-align: center;
+    padding: 3rem 2rem; font-size: 0.82rem; line-height: 1.8;
+  }
+  footer strong { color: white; }
+
+  /* ── SCROLL REVEAL ── */
+  .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.6s ease, transform 0.6s ease; }
+  .reveal.visible { opacity: 1; transform: none; }
+
+  /* ── SCROLL TO TOP ── */
+  #top-btn {
+    position: fixed; bottom: 2rem; right: 2rem; width: 44px; height: 44px;
+    background: var(--teal); color: white; border: none; border-radius: 50%;
+    font-size: 1.1rem; cursor: pointer; box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+    opacity: 0; transition: opacity 0.3s; z-index: 100; display: grid; place-items: center;
+  }
+  #top-btn.show { opacity: 1; }
+
+  @media (max-width: 600px) {
+    nav { padding: 0 1rem; }
+    .nav-links { display: none; }
+    .hero-stats { gap: 1.5rem; }
+    .hero-stat-num { font-size: 1.6rem; }
+    .checklist-section { padding: 2rem 1.5rem; }
+    .highlight { padding: 2rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">MASTER STRESS</div>
+  <div class="nav-links">
+    <a href="#why">Why</a>
+    <a href="#science">Science</a>
+    <a href="#good-bad">Good vs Bad</a>
+    <a href="#mindset">Mindset</a>
+    <a href="#habits">Habits</a>
+    <a href="#people">Famous People</a>
+    <a href="#daily">Daily Guide</a>
+    <a href="#checklist">Checklist</a>
+    <a href="#quiz">Self-Test</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="top">
+  <div class="hero-bg"></div>
+  <div class="hero-noise"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">The Complete Stress Management Guide</div>
+    <h1>Don't just <em>survive</em><br>stress — master it.</h1>
+    <p class="hero-sub">Learn why stress exists, how to use it as fuel, build habits that keep you calm under pressure, and discover what the world's most effective people actually do.</p>
+    <div class="hero-cta">
+      <a href="#why" class="btn btn-primary">Start Reading</a>
+      <a href="#quiz" class="btn btn-outline">Take the Stress Test →</a>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="hero-stat-num">83%</div>
+        <div class="hero-stat-label">of workers feel work stress</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">$300B</div>
+        <div class="hero-stat-label">lost to stress annually</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">7×</div>
+        <div class="hero-stat-label">more productive when calm</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 1: WHY -->
+<section class="section" id="why">
+  <div class="reveal">
+    <div class="section-tag">Chapter 01</div>
+    <h2 class="section-title">Why You Need to Master<br>Stress Management</h2>
+    <p class="section-lead">Stress isn't going away. The world is getting faster, more demanding, and more complex. The question isn't how to eliminate stress — it's how to master it so it works for you instead of against you.</p>
+  </div>
+
+  <div class="two-col" style="margin-top:3.5rem;">
+    <div class="reveal">
+      <div class="big-num">01</div>
+      <h3 style="font-family:'Playfair Display',serif;font-size:1.4rem;margin-bottom:0.75rem;">Unmanaged stress is silently destroying performance</h3>
+      <p style="color:var(--text-muted);line-height:1.8;font-size:0.95rem;">Chronic stress impairs your prefrontal cortex — the part of your brain responsible for decision-making, creativity, and emotional regulation. Under high stress, you literally can't think clearly. Deadlines are missed, relationships deteriorate, and health declines. The cost is invisible but enormous.</p>
+    </div>
+    <div class="reveal">
+      <div class="big-num">02</div>
+      <h3 style="font-family:'Playfair Display',serif;font-size:1.4rem;margin-bottom:0.75rem;">Stress mastery is the ultimate competitive edge</h3>
+      <p style="color:var(--text-muted);line-height:1.8;font-size:0.95rem;">People who manage stress well don't experience less of it — they respond to it differently. They stay clear-headed under pressure, recover faster after setbacks, and perform at their peak when it matters most. That's the real advantage mastering stress gives you.</p>
+    </div>
+  </div>
+
+  <div class="card-grid reveal" style="margin-top:3rem;">
+    <div class="card">
+      <div class="card-accent" style="background:var(--teal);"></div>
+      <div class="card-icon">🧠</div>
+      <h3>Mental Clarity</h3>
+      <p>Managing stress keeps your prefrontal cortex active — improving focus, problem-solving, creativity, and decision-making every single day.</p>
+    </div>
+    <div class="card">
+      <div class="card-accent" style="background:var(--amber);"></div>
+      <div class="card-icon">❤️</div>
+      <h3>Physical Health</h3>
+      <p>Chronic stress raises cortisol, damages the heart, weakens immunity, and disrupts sleep. Reducing stress literally adds years to your life.</p>
+    </div>
+    <div class="card">
+      <div class="card-accent" style="background:var(--sage);"></div>
+      <div class="card-icon">🤝</div>
+      <h3>Better Relationships</h3>
+      <p>Stressed people snap, withdraw, and miscommunicate. Calm people listen better, empathize more, and build stronger teams and families.</p>
+    </div>
+    <div class="card">
+      <div class="card-accent" style="background:var(--lavender);"></div>
+      <div class="card-icon">🚀</div>
+      <h3>Peak Performance</h3>
+      <p>The world's top athletes, CEOs, and creators all train their stress responses. Mastery means being your best when the stakes are highest.</p>
+    </div>
+    <div class="card">
+      <div class="card-accent" style="background:var(--rose);"></div>
+      <div class="card-icon">😴</div>
+      <h3>Quality Sleep</h3>
+      <p>Unmanaged stress is the #1 enemy of sleep. Better sleep means more energy, better mood, improved memory, and faster recovery.</p>
+    </div>
+    <div class="card">
+      <div class="card-accent" style="background:var(--gold);"></div>
+      <div class="card-icon">💡</div>
+      <h3>Career Growth</h3>
+      <p>Resilience under pressure is one of the most valued leadership traits. Stress mastery makes you promotable, dependable, and respected.</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SECTION 2: SCIENCE -->
+<div class="alt-bg">
+<section class="section" id="science">
+  <div class="reveal">
+    <div class="section-tag">Chapter 02</div>
+    <h2 class="section-title">The Science of Stress<br><em style="font-style:italic;color:var(--teal);">Simply Explained</em></h2>
+    <p class="section-lead">Stress is your body's built-in alarm system. Understanding it removes the fear and gives you power over it.</p>
+  </div>
+
+  <div class="accordion reveal">
+    <div class="acc-item open">
+      <div class="acc-head" onclick="toggleAcc(this)">
+        <span>🔬 What actually happens in your body when you're stressed?</span>
+        <span class="acc-icon">+</span>
+      </div>
+      <div class="acc-body" style="max-height:500px;">
+        <div class="acc-body-inner">
+          <p>When your brain perceives a threat (real or imagined), it triggers the <strong>HPA axis</strong> — your hypothalamus, pituitary gland, and adrenal glands team up. Here's what happens in milliseconds:</p>
+          <ul>
+            <li>Your <strong>amygdala</strong> (the brain's alarm bell) fires a signal: "DANGER!"</li>
+            <li><strong>Adrenaline and cortisol</strong> flood your bloodstream.</li>
+            <li>Your heart rate increases, blood flows to muscles, pupils dilate.</li>
+            <li>Non-essential systems (digestion, immune response, reproduction) slow down.</li>
+            <li>You become hyper-alert and physically ready to fight or flee.</li>
+          </ul>
+          <p style="margin-top:0.75rem;">This is the <strong>Fight-or-Flight response</strong> — perfect for outrunning a lion, but not ideal for answering a passive-aggressive email.</p>
+        </div>
+      </div>
+    </div>
+    <div class="acc-item">
+      <div class="acc-head" onclick="toggleAcc(this)">
+        <span>⚡ Eustress vs Distress — what's the difference?</span>
+        <span class="acc-icon">+</span>
+      </div>
+      <div class="acc-body">
+        <div class="acc-body-inner">
+          <p><strong>Eustress (Good Stress):</strong> Short-term, motivating, and manageable. The rush before a big presentation, the challenge of a hard workout, or the excitement of a new project. Eustress sharpens focus and drives growth.</p>
+          <p style="margin-top:0.75rem;"><strong>Distress (Bad Stress):</strong> Prolonged, overwhelming, and unmanaged. Chronic work pressure, unresolved conflict, or feeling out of control. Distress causes burnout, illness, and impaired thinking.</p>
+          <p style="margin-top:0.75rem;">The same event — a tight deadline, a difficult conversation — can be either eustress or distress depending on your mindset and coping skills.</p>
+        </div>
+      </div>
+    </div>
+    <div class="acc-item">
+      <div class="acc-head" onclick="toggleAcc(this)">
+        <span>🧪 What does cortisol do to your brain and body?</span>
+        <span class="acc-icon">+</span>
+      </div>
+      <div class="acc-body">
+        <div class="acc-body-inner">
+          <p>Cortisol is your primary stress hormone. In small, short bursts — perfectly fine and useful. But chronic elevation causes:</p>
+          <ul>
+            <li><strong>Brain:</strong> Damages the hippocampus (memory), shrinks the prefrontal cortex (decisions), enlarges the amygdala (fear/anxiety).</li>
+            <li><strong>Body:</strong> Increases blood pressure, raises blood sugar, suppresses the immune system, disrupts sleep, promotes weight gain (especially belly fat).</li>
+            <li><strong>Mood:</strong> Increases risk of depression, anxiety, and emotional reactivity.</li>
+          </ul>
+          <p style="margin-top:0.75rem;">The good news: exercise, sleep, social connection, and mindfulness all lower cortisol naturally.</p>
+        </div>
+      </div>
+    </div>
+    <div class="acc-item">
+      <div class="acc-head" onclick="toggleAcc(this)">
+        <span>🔄 The Yerkes-Dodson Law — stress and performance</span>
+        <span class="acc-icon">+</span>
+      </div>
+      <div class="acc-body">
+        <div class="acc-body-inner">
+          <p>Psychologists Robert Yerkes and John Dodson discovered an inverted-U relationship between arousal (stress) and performance:</p>
+          <ul>
+            <li><strong>Too little stress</strong> = boredom, low motivation, poor performance.</li>
+            <li><strong>Optimal stress</strong> = peak focus, engagement, best performance.</li>
+            <li><strong>Too much stress</strong> = anxiety, impaired thinking, mistakes, burnout.</li>
+          </ul>
+          <p style="margin-top:0.75rem;">The goal isn't zero stress — it's finding your <strong>optimal activation zone</strong> and staying there. Elite performers train themselves to widen this zone.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="quote-block reveal">
+    <blockquote>"It's not stress that kills us — it is our reaction to it."</blockquote>
+    <cite>— Hans Selye, the father of stress research</cite>
+  </div>
+</section>
+</div>
+
+<div class="divider"></div>
+
+<!-- SECTION 3: GOOD VS BAD STRESS -->
+<section class="section" id="good-bad">
+  <div class="reveal">
+    <div class="section-tag">Chapter 03</div>
+    <h2 class="section-title">Good Stress vs Bad Stress</h2>
+    <p class="section-lead">Not all stress is the enemy. Learning to tell the difference — and use good stress as fuel — is a game-changer.</p>
+  </div>
+
+  <div class="reveal" style="overflow-x:auto;margin-top:2rem;">
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Aspect</th>
+          <th><span style="color:#a0e0c8;">✦ Good Stress (Eustress)</span></th>
+          <th><span style="color:#f4a2a2;">✦ Bad Stress (Distress)</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Duration</strong></td>
+          <td><span class="good-badge">Short-term</span> — ends when the challenge is met</td>
+          <td><span class="bad-badge">Chronic</span> — lingers without resolution</td>
+        </tr>
+        <tr>
+          <td><strong>How it feels</strong></td>
+          <td>Exciting, motivated, focused, energized</td>
+          <td>Drained, anxious, overwhelmed, hopeless</td>
+        </tr>
+        <tr>
+          <td><strong>Effect on performance</strong></td>
+          <td>Sharpens focus, boosts creativity, drives you forward</td>
+          <td>Impairs memory, reduces creativity, causes paralysis</td>
+        </tr>
+        <tr>
+          <td><strong>Physical effect</strong></td>
+          <td>Adrenaline rush that fades naturally after the event</td>
+          <td>Elevated cortisol, high blood pressure, poor sleep</td>
+        </tr>
+        <tr>
+          <td><strong>Examples</strong></td>
+          <td>Job promotion, first date, sports competition, a creative deadline, a new challenge</td>
+          <td>Job insecurity, toxic relationships, financial crisis, impossible workload, no rest</td>
+        </tr>
+        <tr>
+          <td><strong>Your response</strong></td>
+          <td>Lean in, embrace it, use it as fuel</td>
+          <td>Address root cause, set limits, seek support</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="highlight reveal">
+    <div>
+      <h2>How to Turn Bad Stress into Good Stress</h2>
+      <p>Researchers at Stanford found that simply <strong>believing stress is helpful</strong> dramatically changes its physical effects on your body. Here's how to reframe it:</p>
+    </div>
+    <ul class="highlight-list">
+      <li>Ask: "What is this stress preparing me for?"</li>
+      <li>Reframe deadlines as clarity — they force focus</li>
+      <li>See conflict as a signal something important needs attention</li>
+      <li>Treat physical stress symptoms (racing heart) as "getting ready" not "falling apart"</li>
+      <li>Focus on what you can control, accept what you can't</li>
+      <li>Use the energy stress gives you — move your body</li>
+    </ul>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SECTION 4: MINDSET -->
+<div class="alt-bg">
+<section class="section" id="mindset">
+  <div class="reveal">
+    <div class="section-tag">Chapter 04</div>
+    <h2 class="section-title">The Mindset of Stress Masters</h2>
+    <p class="section-lead">Stress management starts in your mind. These six mental frameworks are how the most resilient people on Earth think differently.</p>
+  </div>
+
+  <div class="mindset-grid reveal">
+    <div class="mindset-tile" style="background:linear-gradient(135deg,#1b6e6e,#0d4a4a);">
+      <div class="mindset-tile-icon">🌱</div>
+      <h4>Growth Mindset</h4>
+      <p>Every stressor is a lesson, not a threat. Challenges build you — they don't define you.</p>
+    </div>
+    <div class="mindset-tile" style="background:linear-gradient(135deg,#e07b39,#b55a22);">
+      <div class="mindset-tile-icon">⚡</div>
+      <h4>Response-ability</h4>
+      <p>You can't control events. You always control your response. That gap is your power.</p>
+    </div>
+    <div class="mindset-tile" style="background:linear-gradient(135deg,#6b8f71,#3d5c42);">
+      <div class="mindset-tile-icon">🎯</div>
+      <h4>Clarity of Values</h4>
+      <p>Knowing what truly matters removes countless stressors that were never yours to carry.</p>
+    </div>
+    <div class="mindset-tile" style="background:linear-gradient(135deg,#7b6fa0,#4e4566);">
+      <div class="mindset-tile-icon">🔄</div>
+      <h4>Process Focus</h4>
+      <p>Champions focus on what they're doing now, not catastrophic future outcomes they can't control.</p>
+    </div>
+    <div class="mindset-tile" style="background:linear-gradient(135deg,#c1666b,#8b3840);">
+      <div class="mindset-tile-icon">🧘</div>
+      <h4>Present Moment</h4>
+      <p>Almost all anxiety lives in the future. Most calm lives in the present. Stay here, stay clear.</p>
+    </div>
+    <div class="mindset-tile" style="background:linear-gradient(135deg,#d4a853,#9a6e1a);">
+      <div class="mindset-tile-icon">🙏</div>
+      <h4>Radical Acceptance</h4>
+      <p>Fighting what you can't change is the biggest source of suffering. Accept, adapt, advance.</p>
+    </div>
+  </div>
+
+  <div class="reveal" style="margin-top:3rem;">
+    <div class="quote-block">
+      <blockquote>"Between stimulus and response there is a space. In that space is our power to choose our response. In our response lies our growth and our freedom."</blockquote>
+      <cite>— Viktor Frankl, psychiatrist and Holocaust survivor</cite>
+    </div>
+  </div>
+</section>
+</div>
+
+<div class="divider"></div>
+
+<!-- SECTION 5: HABITS -->
+<section class="section" id="habits">
+  <div class="reveal">
+    <div class="section-tag">Chapter 05</div>
+    <h2 class="section-title">Habits That Keep You<br>Calm & High-Performing</h2>
+    <p class="section-lead">Mindset shifts need habit support. These evidence-based practices build a nervous system that is naturally calmer and more resilient.</p>
+  </div>
+
+  <div class="tab-bar reveal">
+    <button class="tab-btn active" onclick="openTab(this,'body')">🏃 Body</button>
+    <button class="tab-btn" onclick="openTab(this,'mind')">🧠 Mind</button>
+    <button class="tab-btn" onclick="openTab(this,'work')">💼 Work</button>
+    <button class="tab-btn" onclick="openTab(this,'social')">🤝 Social</button>
+    <button class="tab-btn" onclick="openTab(this,'recovery')">😴 Recovery</button>
+  </div>
+
+  <div id="tab-body" class="tab-panel active reveal">
+    <div class="card-grid">
+      <div class="card"><div class="card-accent" style="background:var(--teal);"></div><div class="card-icon">🏋️</div><h3>Exercise Daily</h3><p>Even 20–30 minutes of moderate exercise lowers cortisol, increases endorphins, and creates new neurons in the hippocampus — literally rebuilding a stress-resistant brain. Dr. John Ratey calls it "the world's best drug."</p></div>
+      <div class="card"><div class="card-accent" style="background:var(--teal);"></div><div class="card-icon">🌬️</div><h3>Breathwork</h3><p>Box breathing (4 sec in, 4 hold, 4 out, 4 hold), the physiological sigh (double inhale through nose, long exhale) or the 4-7-8 method directly activate the parasympathetic nervous system — your "rest and digest" mode — within minutes.</p></div>
+      <div class="card"><div class="card-accent" style="background:var(--teal);"></div><div class="card-icon">🥗</div><h3>Anti-Stress Nutrition</h3><p>Cut caffeine after 2pm, reduce alcohol (it increases cortisol), and eat foods high in magnesium (spinach, nuts, dark chocolate) and omega-3s (salmon, walnuts). These directly lower inflammation and stress hormones.</p></div>
+      <div class="card"><div class="card-accent" style="background:var(--teal);"></div><div class="card-icon">🌿</div><h3>Spend Time in Nature</h3><p>Research from Stanford shows just 90 minutes in nature reduces activity in the amygdala (stress center). A daily walk in a park, near water, or among trees is one of the most powerful resets available.</p></div>
+    </div>
+  </div>
+
+  <div id="tab-mind" class="tab-panel reveal">
+    <div class="card-grid">
+      <div class="card"><div class="card-accent" style="background:var(--lavender);"></div><div class="card-icon">🧘</div><h3>Meditation & Mindfulness</h3><p>8 weeks of Mindfulness-Based Stress Reduction (MBSR) measurably shrinks the amygdala and thickens the prefrontal cortex. Even 10 minutes/day using apps like Headspace, Calm, or Waking Up creates lasting changes.</p></div>
+      <div class="card"><div class="card-accent" style="background:var(--lavender);"></div><div class="card-icon">📓</div><h3>Journaling</h3><p>Writing about what stresses you for 15 minutes "offloads" it from your working memory, creates cognitive distance, and often reveals solutions. Research by Dr. James Pennebaker shows journaling improves both mental and physical health.</p></div>
+      <div class="card"><div class="card-accent" style="background:var(--lavender);"></div><div class="card-icon">🎯</div><h3>Cognitive Reframing</h3><p>When stressed, ask: "Will this matter in 5 years? What's the worst that can actually happen? What's actually in my control?" This activates the prefrontal cortex and quiets the amygdala, shifting you out of reactive mode.</p></div>
+      <div class="card"><div class="card-accent" style="background:var(--lavender);"></div><div class="card-icon">🙏</div><h3>Gratitude Practice</h3><p>Writing 3 specific things you're grateful for daily rewires your brain toward positive pattern recognition. Martin Seligman's studies show it's one of the fastest ways to raise baseline happiness and reduce anxiety.</p></div>
+    </div>
+  </div>
+
+  <div id="tab-work" class="tab-panel reveal">
+    <div class="card-grid">
+      <div class="card"><div class="card-accent" style="background:var(--amber);"></div><div class="card-icon">📋</div><h3>Prioritization Systems</h3><p>Use the Eisenhower Matrix (urgent/important grid) or "MIT — Most Important Task" method. Decide the night before what truly matters. Confusion about priorities is a major hidden stressor.</p></div>
+      <div class="card"><div class="card-accent" style="background:var(--amber);"></div><div class="card-icon">⏱️</div><h3>Time Blocking</h3><p>Reactive work (always responding to others) is far more stressful than proactive work. Block focus time on your calendar and protect it. Work in 90-minute deep work blocks with 15-min breaks (the ultradian rhythm).</p></div>
+      <div class="card"><div class="card-accent" style="background:var(--amber);"></div><div class="card-icon">🚫</div><h3>Learn to Say No</h3><p>"No" is a complete sentence. Every yes to one thing is a no to another. Warren Buffett says: "The difference between successful people and very successful people is that very successful people say no to almost everything."</p></div>
+      <div class="card"><div class="card-accent" style="background:var(--amber);"></div><div class="card-icon">📵</div><h3>Digital Boundaries</h3><p>Check email at set times, not constantly. Turn off non-essential notifications. Research shows constant notification interruptions increase cortisol throughout the day by up to 23%.</p></div>
+    </div>
+  </div>
+
+  <div id="tab-social" class="tab-panel reveal">
+    <div class="card-grid">
+      <div class="card"><div class="card-accent" style="background:var(--sage);"></div><div class="card-icon">💬</div><h3>Talk It Out</h3><p>Social sharing activates the release of oxytocin — the bonding hormone that counters cortisol. Talking to a trusted friend, mentor, or therapist is one of the most effective stress relievers known. You're not built to do this alone.</p></div>
+      <div class="card"><div class="card-accent" style="background:var(--sage);"></div><div class="card-icon">🤲</div><h3>Help Others</h3><p>Studies by the Harvard Grant Study (75 years of data) show that service to others is a top predictor of happiness and stress resilience. Volunteering, mentoring, or even simple acts of kindness trigger feel-good neurochemicals.</p></div>
+      <div class="card"><div class="card-accent" style="background:var(--sage);"></div><div class="card-icon">🌐</div><h3>Curate Your Circle</h3><p>You absorb the stress and calm of those around you (emotional contagion is real and measurable). Spend more time with people who energize and ground you. Set healthy limits with chronic complainers or drama-creators.</p></div>
+      <div class="card"><div class="card-accent" style="background:var(--sage);"></div><div class="card-icon">😂</div><h3>Laugh Often</h3><p>Genuine laughter reduces cortisol and adrenaline by 39% and increases endorphins, dopamine, and serotonin. Dr. Lee Berk's research at Loma Linda University proves humor is measurably therapeutic.</p></div>
+    </div>
+  </div>
+
+  <div id="tab-recovery" class="tab-panel reveal">
+    <div class="card-grid">
+      <div class="card"><div class="card-accent" style="background:var(--rose);"></div><div class="card-icon">💤</div><h3>Protect Your Sleep</h3><p>Matthew Walker's research shows even one night of poor sleep increases amygdala reactivity by 60%. Aim for 7–9 hours. Maintain consistent sleep/wake times, keep your room cool and dark, and avoid screens 1 hour before bed.</p></div>
+      <div class="card"><div class="card-accent" style="background:var(--rose);"></div><div class="card-icon">🛁</div><h3>Active Recovery</h3><p>Rest doesn't mean doing nothing — it means doing something different. Reading, drawing, a slow walk, cooking, playing music — activities that engage without demanding performance activate the parasympathetic system.</p></div>
+      <div class="card"><div class="card-accent" style="background:var(--rose);"></div><div class="card-icon">📅</div><h3>Regular Vacations & Breaks</h3><p>Research shows stress hormones peak on the second day of vacation and drop significantly by day three. Short, frequent breaks (even a long weekend) restore more than one long annual vacation. Schedule recovery like work.</p></div>
+      <div class="card"><div class="card-accent" style="background:var(--rose);"></div><div class="card-icon">🧊</div><h3>Cold Exposure</h3><p>Cold showers or ice baths (used by military, athletes, and executives) rapidly reduce cortisol, release norepinephrine, and train your nervous system to stay calm under physiological stress — building real resilience.</p></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SECTION 6: FAMOUS PEOPLE & COMPANIES -->
+<div class="alt-bg">
+<section class="section" id="people">
+  <div class="reveal">
+    <div class="section-tag">Chapter 06</div>
+    <h2 class="section-title">How the World's Best<br>Manage Stress</h2>
+    <p class="section-lead">Leaders, athletes, and companies at the highest levels have developed specific, repeatable systems for managing pressure. Here's what they actually do.</p>
+  </div>
+
+  <div class="person-grid reveal">
+    <div class="person-card">
+      <div class="person-header">
+        <div class="person-avatar" style="background:linear-gradient(135deg,#1b6e6e,#2a9d8f);">🧘</div>
+        <div class="person-meta"><h4>LeBron James</h4><span>NBA Champion · 4× MVP</span></div>
+      </div>
+      <div class="person-body">
+        <div class="person-strategy"><div class="strategy-dot"></div><p>Spends over <strong>$1.5M/year</strong> on sleep, recovery, and body maintenance — calling sleep "the best investment."</p></div>
+        <div class="person-strategy"><div class="strategy-dot"></div><p>Uses cryotherapy, float tanks (sensory deprivation), and meditation to reset after games.</p></div>
+        <div class="person-strategy"><div class="strategy-dot"></div><p>Practices extreme routine and predictability — same warm-ups, same music, same pre-game rituals. Consistency = calm.</p></div>
+      </div>
+    </div>
+
+    <div class="person-card">
+      <div class="person-header">
+        <div class="person-avatar" style="background:linear-gradient(135deg,#e07b39,#d4a853);">📱</div>
+        <div class="person-meta"><h4>Tim Cook (Apple CEO)</h4><span>CEO · Fortune 500 Leader</span></div>
+      </div>
+      <div class="person-body">
+        <div class="person-strategy"><div class="strategy-dot"></div><p>Wakes up at <strong>3:45 AM</strong> daily for quiet morning time — emails, reflection, and gym before the world demands his attention.</p></div>
+        <div class="person-strategy"><div class="strategy-dot"></div><p>Described as intensely calm under pressure, known for walking meetings to combine movement and problem-solving.</p></div>
+        <div class="person-strategy"><div class="strategy-dot"></div><p>Credits nature hikes and physical activity for his ability to stay grounded despite leading one of the world's most complex companies.</p></div>
+      </div>
+    </div>
+
+    <div class="person-card">
+      <div class="person-header">
+        <div class="person-avatar" style="background:linear-gradient(135deg,#7b6fa0,#4e4566);">🧠</div>
+        <div class="person-meta"><h4>Oprah Winfrey</h4><span>Media Mogul · Billionaire</span></div>
+      </div>
+      <div class="person-body">
+        <div class="person-strategy"><div class="strategy-dot"></div><p>Has practiced <strong>20-minute Transcendental Meditation twice daily</strong> since the 1990s, calling it "the most life-changing thing I've ever done."</p></div>
+        <div class="person-strategy"><div class="strategy-dot"></div><p>Keeps a gratitude journal and has spoken publicly for decades about how gratitude rewired her response to stress and adversity.</p></div>
+        <div class="person-strategy"><div class="strategy-dot"></div><p>Uses clear morning rituals (no email first thing) and creates strict separation between reactive and creative work.</p></div>
+      </div>
+    </div>
+
+    <div class="person-card">
+      <div class="person-header">
+        <div class="person-avatar" style="background:linear-gradient(135deg,#c1666b,#8b3840);">🏆</div>
+        <div class="person-meta"><h4>Simone Biles</h4><span>Olympic Gymnast · 30+ World Medals</span></div>
+      </div>
+      <div class="person-body">
+        <div class="person-strategy"><div class="strategy-dot"></div><p>Made the world-changing decision at Tokyo 2020 to withdraw and <strong>prioritize mental health over medals</strong> — changing the global conversation about athlete wellbeing.</p></div>
+        <div class="person-strategy"><div class="strategy-dot"></div><p>Works with a sports psychologist and practices visualization, breathing, and self-compassion techniques before competing.</p></div>
+        <div class="person-strategy"><div class="strategy-dot"></div><p>Publicly advocates for therapy, calling it "the best thing I ever did for my performance and my life."</p></div>
+      </div>
+    </div>
+
+    <div class="person-card">
+      <div class="person-header">
+        <div class="person-avatar" style="background:linear-gradient(135deg,#2a9d8f,#1b6e6e);">🌍</div>
+        <div class="person-meta"><h4>Google / Alphabet</h4><span>75,000+ Employees · Tech Giant</span></div>
+      </div>
+      <div class="person-body">
+        <div class="person-strategy"><div class="strategy-dot"></div><p>Launched <strong>"Search Inside Yourself"</strong> — a mindfulness-based emotional intelligence program developed internally, now taught globally to other companies.</p></div>
+        <div class="person-strategy"><div class="strategy-dot"></div><p>Has on-campus meditation rooms, nap pods, and integrates mindfulness into leadership development programs.</p></div>
+        <div class="person-strategy"><div class="strategy-dot"></div><p>Culture of psychological safety — Amy Edmondson's research (championed at Google through Project Aristotle) shows this is the #1 factor in team performance and low burnout.</p></div>
+      </div>
+    </div>
+
+    <div class="person-card">
+      <div class="person-header">
+        <div class="person-avatar" style="background:linear-gradient(135deg,#d4a853,#9a6e1a);">🏢</div>
+        <div class="person-meta"><h4>Aetna Insurance</h4><span>Fortune 500 · 50,000 Employees</span></div>
+      </div>
+      <div class="person-body">
+        <div class="person-strategy"><div class="strategy-dot"></div><p>CEO Mark Bertolini led a company-wide <strong>yoga and mindfulness program</strong> after his own skiing accident and chronic pain recovery.</p></div>
+        <div class="person-strategy"><div class="strategy-dot"></div><p>Employees who completed mindfulness programs averaged <strong>$2,000/year in reduced healthcare costs</strong> and gained 62 minutes of productivity per week.</p></div>
+        <div class="person-strategy"><div class="strategy-dot"></div><p>The program generated an estimated <strong>11:1 ROI</strong> for the company, proving stress management is good business.</p></div>
+      </div>
+    </div>
+
+    <div class="person-card">
+      <div class="person-header">
+        <div class="person-avatar" style="background:linear-gradient(135deg,#1a1a2e,#3a3a6e);">⚓</div>
+        <div class="person-meta"><h4>U.S. Navy SEALs</h4><span>Special Operations Force</span></div>
+      </div>
+      <div class="person-body">
+        <div class="person-strategy"><div class="strategy-dot"></div><p>Train the <strong>Box Breathing (4-4-4-4)</strong> technique as a tactical tool — used to downregulate the nervous system before high-stakes operations.</p></div>
+        <div class="person-strategy"><div class="strategy-dot"></div><p>"Embrace the suck" philosophy — deliberate exposure to extreme discomfort in training builds stress tolerance and calm under real pressure.</p></div>
+        <div class="person-strategy"><div class="strategy-dot"></div><p>Use <strong>positive self-talk scripts</strong> and visualization, showing that mental training is as critical as physical training.</p></div>
+      </div>
+    </div>
+
+    <div class="person-card">
+      <div class="person-header">
+        <div class="person-avatar" style="background:linear-gradient(135deg,#6b8f71,#3d5c42);">📦</div>
+        <div class="person-meta"><h4>Salesforce</h4><span>Cloud CRM Leader · Global HQ</span></div>
+      </div>
+      <div class="person-body">
+        <div class="person-strategy"><div class="strategy-dot"></div><p>Every Salesforce office has a dedicated <strong>Mindfulness Zone (Ohana Floor)</strong> — quiet rooms for reflection, meditation, or simply breathing.</p></div>
+        <div class="person-strategy"><div class="strategy-dot"></div><p>CEO Marc Benioff is a practicing meditator who credits mindfulness with his ability to make high-pressure decisions at scale.</p></div>
+        <div class="person-strategy"><div class="strategy-dot"></div><p>Offers <strong>7 days of paid volunteer time off</strong> yearly — linking purpose-driven work and community service to employee stress reduction and satisfaction.</p></div>
+      </div>
+    </div>
+
+    <div class="person-card">
+      <div class="person-header">
+        <div class="person-avatar" style="background:linear-gradient(135deg,#e07b39,#b55a22);">📖</div>
+        <div class="person-meta"><h4>Marcus Aurelius</h4><span>Roman Emperor · Stoic Philosopher</span></div>
+      </div>
+      <div class="person-body">
+        <div class="person-strategy"><div class="strategy-dot"></div><p>Wrote <em>Meditations</em> as a private journal to manage stress, maintain perspective, and ground himself despite running an empire during constant war and plague.</p></div>
+        <div class="person-strategy"><div class="strategy-dot"></div><p>Practiced the <strong>Dichotomy of Control</strong> daily: focus only on what you can control, release the rest with total equanimity.</p></div>
+        <div class="person-strategy"><div class="strategy-dot"></div><p>Used <em>"Premeditatio Malorum"</em> (negative visualization) to mentally prepare for worst-case scenarios — eliminating surprise-stress and building resolve.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+</div>
+
+<div class="divider"></div>
+
+<!-- SECTION 7: BENEFITS -->
+<section class="section" id="benefits">
+  <div class="reveal">
+    <div class="section-tag">Chapter 07</div>
+    <h2 class="section-title">The Surprising Benefits<br>of <em style="font-style:italic;color:var(--teal);">Managed</em> Stress</h2>
+    <p class="section-lead">Not all stress is harmful — well-calibrated stress is one of your greatest assets. Here's what it actually does for you when you manage it right.</p>
+  </div>
+
+  <div class="benefits-grid reveal">
+    <div class="benefit-tile"><div class="benefit-icon">⚡</div><h4>Boosts Focus</h4><p>Acute stress floods the brain with norepinephrine — narrowing attention and increasing concentration on what matters most.</p></div>
+    <div class="benefit-tile"><div class="benefit-icon">💪</div><h4>Builds Resilience</h4><p>Overcoming stressful challenges (hormesis) literally strengthens your psychological and physiological stress-response systems.</p></div>
+    <div class="benefit-tile"><div class="benefit-icon">🏃</div><h4>Physical Peak</h4><p>Adrenaline maximizes strength, speed, and endurance — it's why athletes perform better under competitive pressure than in solo practice.</p></div>
+    <div class="benefit-tile"><div class="benefit-icon">🎨</div><h4>Sparks Creativity</h4><p>Moderate constraint and pressure can force creative solutions that comfort never would. Deadlines are often creativity engines.</p></div>
+    <div class="benefit-tile"><div class="benefit-icon">🔗</div><h4>Deepens Bonds</h4><p>Shared stress and adversity create deep human connection. Teams that face challenges together bond more strongly and trust more deeply.</p></div>
+    <div class="benefit-tile"><div class="benefit-icon">🧬</div><h4>Strengthens Immunity</h4><p>Brief stress primes the immune system — white blood cells are mobilized and deployed to potential injury sites in anticipation.</p></div>
+    <div class="benefit-tile"><div class="benefit-icon">🎯</div><h4>Sharpens Motivation</h4><p>The right level of stress eliminates complacency and keeps you engaged. It's the engine of ambition and drive.</p></div>
+    <div class="benefit-tile"><div class="benefit-icon">🧠</div><h4>Enhances Memory</h4><p>Stress hormones improve memory consolidation of important events — your brain marks stressful experiences as "must remember."</p></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SECTION 8: DAILY GUIDE -->
+<div class="alt-bg">
+<section class="section" id="daily">
+  <div class="reveal">
+    <div class="section-tag">Chapter 08</div>
+    <h2 class="section-title">Your Stress-Free Daily<br>Blueprint</h2>
+    <p class="section-lead">Small, consistent actions create an environment where stress doesn't build up. Here's a proven daily structure used by high performers.</p>
+  </div>
+
+  <div class="timeline reveal">
+    <div class="tl-item">
+      <div class="tl-dot" style="background:linear-gradient(135deg,var(--amber),var(--gold));">🌅</div>
+      <div class="tl-content">
+        <div class="tl-time">5:30 – 7:00 AM · MORNING ANCHOR</div>
+        <h4>Protect the first hour</h4>
+        <p>No phone, no email. Drink water, move your body (even 10 min), write 3 intentions for the day, and practice 5 min of breathing or meditation. You set the tone — don't let the world set it for you.</p>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot" style="background:linear-gradient(135deg,var(--teal),var(--teal-light));">🎯</div>
+      <div class="tl-content">
+        <div class="tl-time">7:00 – 9:00 AM · DEEP WORK BLOCK</div>
+        <h4>Attack your most important task first</h4>
+        <p>Willpower and focus are highest in the morning. Tackle the work that matters most — the task you'd be most stressed about leaving undone. Close distractions, put your phone away, set a timer.</p>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot" style="background:linear-gradient(135deg,var(--sage),#3d5c42);">🚶</div>
+      <div class="tl-content">
+        <div class="tl-time">10:30 – 10:45 AM · MICRO-RESET</div>
+        <h4>Step away and reset</h4>
+        <p>Every 90 minutes, take a genuine break. Walk outside, do breathing exercises, or have a quiet coffee. These "ultradian rhythm" breaks prevent stress accumulation throughout the day.</p>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot" style="background:linear-gradient(135deg,var(--lavender),#4e4566);">🤝</div>
+      <div class="tl-content">
+        <div class="tl-time">12:00 – 1:00 PM · SOCIAL LUNCH</div>
+        <h4>Connect, don't scroll</h4>
+        <p>Have lunch with a colleague, call a friend, or simply sit outside without your phone. Social connection releases oxytocin that counters morning cortisol buildup. Eating while working is a major stress amplifier.</p>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot" style="background:linear-gradient(135deg,var(--amber),#b55a22);">📝</div>
+      <div class="tl-content">
+        <div class="tl-time">4:30 – 5:00 PM · SHUTDOWN RITUAL</div>
+        <h4>Close the mental loop</h4>
+        <p>Write a brief "done list," review tomorrow's top 3 tasks, then close your laptop and say out loud "Shutdown complete" (Cal Newport's technique). This signals your brain to stop ruminating about work.</p>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot" style="background:linear-gradient(135deg,var(--rose),#8b3840);">🌙</div>
+      <div class="tl-content">
+        <div class="tl-time">9:30 – 10:30 PM · WIND-DOWN</div>
+        <h4>Prepare your nervous system for sleep</h4>
+        <p>Dim lights, avoid screens, read fiction or journal, take a warm shower (drops your core body temp, triggering sleep). Write 3 things you're grateful for. Your brain consolidates the day's stress during sleep — give it the best conditions.</p>
+      </div>
+    </div>
+  </div>
+</section>
+</div>
+
+<div class="divider"></div>
+
+<!-- SECTION 9: DAILY CHECKLIST -->
+<section class="section" id="checklist">
+  <div class="reveal">
+    <div class="section-tag">Chapter 09</div>
+    <h2 class="section-title">Your Daily Stress Management Checklist</h2>
+    <p class="section-lead">Check off what you've done today. This is your daily practice — even completing 50% creates a meaningfully calmer day.</p>
+  </div>
+
+  <div class="checklist-section reveal" id="daily-checklist">
+    <h3>Today's Stress Management Checklist</h3>
+
+    <div class="checklist-progress">
+      <div class="progress-bar-bg"><div class="progress-bar" id="progress-bar" style="width:0%"></div></div>
+      <div class="progress-text" id="progress-text">0 of 20 completed</div>
+    </div>
+
+    <div class="check-group">
+      <div class="check-group-title">🌅 Morning Foundation</div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-text">Started the day without immediately checking phone or email</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-text">Did at least 5 minutes of breathing, meditation, or quiet reflection</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-text">Identified my 1–3 most important tasks for today</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-text">Drank water and ate a nourishing breakfast</span></div>
+    </div>
+
+    <div class="check-group">
+      <div class="check-group-title">💼 Work Habits</div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-text">Focused on one task at a time (no multitasking)</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-text">Took at least one genuine break away from screens</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-text">Said no to at least one non-essential request</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-text">Turned off non-essential notifications for focus blocks</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-text">Did a proper work shutdown ritual before ending work</span></div>
+    </div>
+
+    <div class="check-group">
+      <div class="check-group-title">🏃 Body & Movement</div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-text">Got at least 20 minutes of physical movement</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-text">Spent at least 10 minutes outdoors or in natural light</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-text">Avoided caffeine after 2:00 PM</span></div>
+    </div>
+
+    <div class="check-group">
+      <div class="check-group-title">🧠 Mind & Emotion</div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-text">Caught myself catastrophizing and reframed with facts</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-text">Expressed gratitude (said it out loud or wrote it down)</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-text">Journaled, reflected, or processed today's feelings in some way</span></div>
+    </div>
+
+    <div class="check-group">
+      <div class="check-group-title">🤝 Social & Connection</div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-text">Had a real, meaningful conversation with someone (not just Slack)</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-text">Did something kind or helpful for another person</span></div>
+    </div>
+
+    <div class="check-group">
+      <div class="check-group-title">🌙 Evening Recovery</div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-text">Started winding down 1 hour before bed (no screens)</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-text">Wrote down 3 things I'm grateful for tonight</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-text">Going to bed at a consistent time for quality sleep</span></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SECTION 10: QUIZ -->
+<div class="alt-bg">
+<section class="section" id="quiz">
+  <div class="reveal">
+    <div class="section-tag">Chapter 10</div>
+    <h2 class="section-title">What's Your Stress Level?<br>Take the Self-Assessment</h2>
+    <p class="section-lead">Answer honestly. This will tell you whether you're experiencing healthy eustress, moderate distress, or high chronic stress — and what to do about it.</p>
+  </div>
+
+  <div class="quiz-card reveal">
+    <div class="quiz-header">
+      <h3>Stress Level Self-Assessment</h3>
+      <p>Select the option that best reflects your experience over the past 2 weeks. There are no wrong answers.</p>
+    </div>
+    <div class="quiz-body" id="quiz-body">
+
+      <div class="quiz-q" data-q="1">
+        <p>1. How often do you feel mentally exhausted by the end of the day?</p>
+        <div class="quiz-options">
+          <span class="quiz-opt" data-val="1" onclick="selectOpt(this)">Rarely</span>
+          <span class="quiz-opt" data-val="2" onclick="selectOpt(this)">Sometimes</span>
+          <span class="quiz-opt" data-val="3" onclick="selectOpt(this)">Often</span>
+          <span class="quiz-opt" data-val="4" onclick="selectOpt(this)">Almost always</span>
+        </div>
+      </div>
+
+      <div class="quiz-q" data-q="2">
+        <p>2. How well are you sleeping?</p>
+        <div class="quiz-options">
+          <span class="quiz-opt" data-val="1" onclick="selectOpt(this)">Very well (7–9 hrs, feel rested)</span>
+          <span class="quiz-opt" data-val="2" onclick="selectOpt(this)">Okay (some disruption)</span>
+          <span class="quiz-opt" data-val="3" onclick="selectOpt(this)">Poorly (wake often, can't switch off)</span>
+          <span class="quiz-opt" data-val="4" onclick="selectOpt(this)">Very poorly (exhausted despite sleep)</span>
+        </div>
+      </div>
+
+      <div class="quiz-q" data-q="3">
+        <p>3. When you think about your upcoming week, how do you feel?</p>
+        <div class="quiz-options">
+          <span class="quiz-opt" data-val="1" onclick="selectOpt(this)">Energized and ready</span>
+          <span class="quiz-opt" data-val="2" onclick="selectOpt(this)">Slightly anxious but manageable</span>
+          <span class="quiz-opt" data-val="3" onclick="selectOpt(this)">Overwhelmed and worried</span>
+          <span class="quiz-opt" data-val="4" onclick="selectOpt(this)">Dread it or feel numb</span>
+        </div>
+      </div>
+
+      <div class="quiz-q" data-q="4">
+        <p>4. How is your patience and emotional control lately?</p>
+        <div class="quiz-options">
+          <span class="quiz-opt" data-val="1" onclick="selectOpt(this)">Calm and patient</span>
+          <span class="quiz-opt" data-val="2" onclick="selectOpt(this)">Mostly fine, some irritability</span>
+          <span class="quiz-opt" data-val="3" onclick="selectOpt(this)">Easily irritated or emotional</span>
+          <span class="quiz-opt" data-val="4" onclick="selectOpt(this)">Frequently snapping or feeling flat</span>
+        </div>
+      </div>
+
+      <div class="quiz-q" data-q="5">
+        <p>5. How often do you experience physical symptoms (headaches, tight shoulders, stomach issues, fatigue)?</p>
+        <div class="quiz-options">
+          <span class="quiz-opt" data-val="1" onclick="selectOpt(this)">Rarely or never</span>
+          <span class="quiz-opt" data-val="2" onclick="selectOpt(this)">Occasionally</span>
+          <span class="quiz-opt" data-val="3" onclick="selectOpt(this)">Several times a week</span>
+          <span class="quiz-opt" data-val="4" onclick="selectOpt(this)">Daily, ongoing</span>
+        </div>
+      </div>
+
+      <div class="quiz-q" data-q="6">
+        <p>6. How meaningful and in-control does your work feel right now?</p>
+        <div class="quiz-options">
+          <span class="quiz-opt" data-val="1" onclick="selectOpt(this)">Very meaningful, I feel empowered</span>
+          <span class="quiz-opt" data-val="2" onclick="selectOpt(this)">Somewhat, but could be better</span>
+          <span class="quiz-opt" data-val="3" onclick="selectOpt(this)">I'm going through the motions</span>
+          <span class="quiz-opt" data-val="4" onclick="selectOpt(this)">I feel trapped, powerless, or burned out</span>
+        </div>
+      </div>
+
+      <div class="quiz-q" data-q="7">
+        <p>7. How often do you recover and genuinely relax outside of work?</p>
+        <div class="quiz-options">
+          <span class="quiz-opt" data-val="1" onclick="selectOpt(this)">Daily — I have real downtime</span>
+          <span class="quiz-opt" data-val="2" onclick="selectOpt(this)">A few times a week</span>
+          <span class="quiz-opt" data-val="3" onclick="selectOpt(this)">Rarely — always "on"</span>
+          <span class="quiz-opt" data-val="4" onclick="selectOpt(this)">Almost never — I feel guilty resting</span>
+        </div>
+      </div>
+
+      <button class="submit-btn" onclick="scoreQuiz()">See My Stress Level →</button>
+    </div>
+
+    <div class="quiz-result" id="quiz-result">
+      <div id="result-badge" class="result-badge"></div>
+      <div id="result-title" class="result-title"></div>
+      <div id="result-desc" class="result-desc"></div>
+      <div id="result-actions" style="margin-top:1.5rem;"></div>
+      <button class="submit-btn" style="margin-top:1rem;background:var(--ink);" onclick="resetQuiz()">Retake Assessment</button>
+    </div>
+  </div>
+</section>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <strong>Master Stress — The Complete Guide</strong><br>
+  Built on research from: APA, Harvard Medical School, Stanford Neuroscience, Mayo Clinic, Dr. Andrew Huberman, Dr. Matthew Walker, Dr. Bessel van der Kolk, Viktor Frankl, and the Stoics.<br><br>
+  <em>This guide is for educational purposes. For clinical stress or mental health concerns, please consult a qualified professional.</em>
+</footer>
+
+<button id="top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+  // ACCORDION
+  function toggleAcc(el) {
+    const item = el.parentElement;
+    const body = item.querySelector('.acc-body');
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.acc-item').forEach(i => {
+      i.classList.remove('open');
+      i.querySelector('.acc-body').style.maxHeight = '0';
+    });
+    if (!isOpen) {
+      item.classList.add('open');
+      body.style.maxHeight = body.scrollHeight + 'px';
+    }
+  }
+  // init first open
+  const firstOpen = document.querySelector('.acc-item.open');
+  if (firstOpen) firstOpen.querySelector('.acc-body').style.maxHeight = '500px';
+
+  // TABS
+  function openTab(btn, id) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-' + id).classList.add('active');
+  }
+
+  // CHECKLIST
+  function toggleCheck(el) {
+    el.classList.toggle('checked');
+    updateProgress();
+  }
+  function updateProgress() {
+    const total = document.querySelectorAll('.check-item').length;
+    const done = document.querySelectorAll('.check-item.checked').length;
+    const pct = Math.round((done / total) * 100);
+    document.getElementById('progress-bar').style.width = pct + '%';
+    document.getElementById('progress-text').textContent = done + ' of ' + total + ' completed (' + pct + '%)';
+  }
+
+  // QUIZ
+  function selectOpt(el) {
+    const parent = el.closest('.quiz-q');
+    parent.querySelectorAll('.quiz-opt').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+
+  function scoreQuiz() {
+    const qs = document.querySelectorAll('.quiz-q');
+    let total = 0, answered = 0;
+    qs.forEach(q => {
+      const sel = q.querySelector('.quiz-opt.selected');
+      if (sel) { total += parseInt(sel.dataset.val); answered++; }
+    });
+    if (answered < 7) { alert('Please answer all 7 questions to get your result.'); return; }
+    document.getElementById('quiz-body').style.display = 'none';
+    const result = document.getElementById('quiz-result');
+    result.classList.add('show');
+
+    let badge, title, desc, actions;
+    if (total <= 11) {
+      badge = '<span class="result-badge result-eustress">✦ Healthy Stress (Eustress)</span>';
+      title = 'You\'re thriving under pressure.';
+      desc = 'Your stress is working for you, not against you. You have good coping mechanisms, solid recovery habits, and a healthy relationship with pressure. You\'re in your optimal performance zone. The goal now is to protect and sustain what\'s working — keep your routines strong, your limits clear, and your recovery consistent.';
+      actions = '<strong style="font-size:0.85rem;color:var(--teal);">Focus areas:</strong><br><span style="font-size:0.85rem;color:var(--text-muted);">✓ Keep building on your morning rituals &nbsp;✓ Continue protecting recovery time &nbsp;✓ Share your strategies with others around you</span>';
+    } else if (total <= 18) {
+      badge = '<span class="result-badge result-moderate">⚠ Moderate Stress</span>';
+      title = 'Stress is building — time to intervene.';
+      desc = 'You\'re managing, but running close to your limits. Some warning signs are present — sleep may be disrupted, patience thinner, recovery less consistent. This is a very important window: moderate stress that goes unaddressed becomes chronic distress. You don\'t need to overhaul everything — small, consistent changes now will have a big payoff.';
+      actions = '<strong style="font-size:0.85rem;color:var(--gold);">Priority actions:</strong><br><span style="font-size:0.85rem;color:var(--text-muted);">→ Start with sleep (most immediate ROI) &nbsp;→ Add one stress-release activity daily (walk, breathwork, journaling) &nbsp;→ Audit your commitments and drop one non-essential &nbsp;→ Talk to someone you trust about how you\'re feeling</span>';
+    } else {
+      badge = '<span class="result-badge result-high">🚨 High / Chronic Stress</span>';
+      title = 'This needs your urgent attention.';
+      desc = 'Your stress levels are in the danger zone. Chronic high stress causes measurable harm to your brain, body, and relationships. The good news: humans are remarkably resilient, and recovery is absolutely possible. But it requires intentional action, not just toughing it out. Please don\'t ignore these signals.';
+      actions = '<strong style="font-size:0.85rem;color:var(--rose);">Immediate steps:</strong><br><span style="font-size:0.85rem;color:var(--text-muted);">→ Talk to a doctor, therapist, or trusted mentor — today if possible &nbsp;→ Identify your top 1–2 stressors and take one concrete action to reduce them &nbsp;→ Commit to 7–8 hours of sleep as non-negotiable &nbsp;→ Do not white-knuckle this alone — connection is medicine &nbsp;→ Consider a brief digital detox (even 24 hours)</span>';
+    }
+    document.getElementById('result-badge').innerHTML = badge;
+    document.getElementById('result-title').textContent = title;
+    document.getElementById('result-desc').textContent = desc;
+    document.getElementById('result-actions').innerHTML = actions;
+  }
+
+  function resetQuiz() {
+    document.querySelectorAll('.quiz-opt').forEach(o => o.classList.remove('selected'));
+    document.getElementById('quiz-body').style.display = 'block';
+    document.getElementById('quiz-result').classList.remove('show');
+  }
+
+  // SCROLL REVEAL
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // SCROLL TO TOP
+  window.addEventListener('scroll', () => {
+    document.getElementById('top-btn').classList.toggle('show', window.scrollY > 400);
+  });
+</script>
+</body>
+</html>
